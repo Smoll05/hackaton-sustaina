@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "76391754914",
+    "project_id": "hackaton-sustaina",
+    "storage_bucket": "hackaton-sustaina.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:76391754914:android:69cd69d0a5378cdcaa3bfb",
+        "android_client_info": {
+          "package_name": "com.hackaton.sustaina"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRiXxRKq92n4_CwVH6UilNhBAVr9F9J7s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
