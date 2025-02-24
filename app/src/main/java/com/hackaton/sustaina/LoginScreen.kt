@@ -1,6 +1,8 @@
 package com.hackaton.sustaina
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,7 +10,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -38,7 +43,7 @@ fun LoginPage(modifier: Modifier = Modifier) {
     }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().padding(40.dp, 0.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -71,6 +76,7 @@ fun LoginPage(modifier: Modifier = Modifier) {
                 email = it
             },
             label = { Text("Email") },
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(Modifier.height(16.dp))
@@ -81,14 +87,16 @@ fun LoginPage(modifier: Modifier = Modifier) {
                 password = it
             },
             label = { Text("Password") },
+            modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation()
         )
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(20.dp))
 
         Button(
-           onClick = {},
-           modifier = Modifier.size(280.dp , 50.dp)
+            onClick = {},
+            modifier = Modifier.fillMaxWidth().height(50.dp),
+            shape = RoundedCornerShape(5.dp)
         ) {
             Text(text = "Login")
         }
