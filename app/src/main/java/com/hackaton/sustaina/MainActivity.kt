@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SustainaTheme {
-                LoginPage()
+                Navigation()
             }
         }
     }
