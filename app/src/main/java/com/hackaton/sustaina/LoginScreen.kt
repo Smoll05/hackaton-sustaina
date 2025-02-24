@@ -60,17 +60,17 @@ fun LoginPage(navController: NavController, modifier: Modifier = Modifier) {
             modifier = Modifier.size(150.dp)
         )
 
-        Text(
-            text = "Sustaina",
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold
-        )
+//        Text(
+//            text = "Sustaina",
+//            fontSize = 32.sp,
+//            fontWeight = FontWeight.Bold
+//        )
 
-        Spacer(Modifier.height(4.dp))
+//        Spacer(Modifier.height(4.dp))
 
         Text(
             text = "Welcome back!",
-            fontSize = 24.sp,
+            fontSize = 32.sp,
             fontWeight = FontWeight.SemiBold
         )
 
