@@ -28,9 +28,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.hackaton.sustaina.ui.theme.LeafyGreen
 
 @Composable
 fun RegisterPage(navController: NavController, modifier: Modifier = Modifier) {
@@ -43,7 +45,11 @@ fun RegisterPage(navController: NavController, modifier: Modifier = Modifier) {
         mutableStateOf("")
     }
 
-    Box(modifier = Modifier.padding(40.dp).fillMaxWidth()) {
+    var confirmPassword by remember {
+        mutableStateOf("")
+    }
+
+    Box(modifier = Modifier.padding(30.dp, 50.dp).fillMaxWidth()) {
         Image(
             painter = painterResource(R.drawable.icon_back),
             contentDescription = "Back Button",
@@ -101,6 +107,18 @@ fun RegisterPage(navController: NavController, modifier: Modifier = Modifier) {
             visualTransformation = PasswordVisualTransformation()
         )
 
+        Spacer(Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = confirmPassword,
+            onValueChange = {
+                confirmPassword = it
+            },
+            label = { Text("Confirm Password") },
+            modifier = Modifier.fillMaxWidth(),
+            visualTransformation = PasswordVisualTransformation()
+        )
+
         Spacer(Modifier.height(20.dp))
 
         Button(
@@ -115,7 +133,11 @@ fun RegisterPage(navController: NavController, modifier: Modifier = Modifier) {
 
         Row {
             Text(text = "Already have an account? ");
-            Text(text = "Sign in here.", color = Color.Green, modifier = Modifier.clickable {
+            Text(
+                text = "Sign in here",
+                color = LeafyGreen,
+                textDecoration = TextDecoration.Underline,
+                modifier = Modifier.clickable {
                 navController.navigate(Routes.Login.route)
             })
         }
