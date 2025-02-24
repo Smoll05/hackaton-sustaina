@@ -164,14 +164,20 @@ fun AboutIssue(name: String, modifier: Modifier = Modifier) {
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 16.dp)
+                .padding(top = 16.dp)
+        )
+        Text(
+            text = "UP Cebu - Computer Science Guild",
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 20.sp,
+            modifier = Modifier.padding(top = 8.dp)
         )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun AboutIssuePreview() {
     SustainaTheme {
         AboutIssue("Android")
     }
