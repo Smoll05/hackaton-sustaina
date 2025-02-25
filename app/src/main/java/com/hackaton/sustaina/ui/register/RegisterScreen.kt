@@ -32,6 +32,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.hackaton.sustaina.ui.navigation.Routes
 import com.hackaton.sustaina.ui.theme.LeafyGreen
 
 @Composable

@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.hackaton.sustaina.ui.login.LoginPage
-import com.hackaton.sustaina.ui.register.RegisterPage
+import com.hackaton.sustaina.LoginPage
+import com.hackaton.sustaina.RegisterPage
 
 sealed class Routes(val route: String) {
     data object Login :  Routes("Login")
