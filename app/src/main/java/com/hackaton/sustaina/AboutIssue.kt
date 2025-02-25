@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.hackaton.sustaina.ui.theme.SustainaTheme
 
 @Composable
-fun AboutIssue(name: String, modifier: Modifier = Modifier) {
+fun AboutIssue(name: String, modifier: Modifier) {
     Column(modifier = Modifier
         .padding(all = 20.dp)
         .verticalScroll(rememberScrollState())
@@ -158,13 +158,18 @@ fun AboutIssue(name: String, modifier: Modifier = Modifier) {
                 .padding(vertical = 16.dp)
         )
 
+        HorizontalDivider(
+            thickness = 2.dp,
+            color = colorResource(R.color.off_grey),
+            modifier = Modifier.padding(vertical = 16.dp))
+
         Text(
             text = "Organizer",
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp)
+                .padding(top = 4.dp)
         )
         Text(
             text = "UP Cebu - Computer Science Guild",
@@ -179,6 +184,7 @@ fun AboutIssue(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun AboutIssuePreview() {
     SustainaTheme {
-        AboutIssue("Android")
+        AboutIssue("Android", modifier = Modifier)
+
     }
 }
