@@ -12,7 +12,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            SustainaTheme {
+//            SustainaTheme(darkTheme = false) { to simulate dark/light mode
+            SustainaTheme() {
                 Navigation()
             }
         }
