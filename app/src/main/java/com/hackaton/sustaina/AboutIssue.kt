@@ -3,25 +3,27 @@ package com.hackaton.sustaina
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.displayCutoutPadding
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,20 +38,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hackaton.sustaina.ui.theme.SustainaTheme
-import java.security.AccessController.getContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutIssue(name: String, modifier: Modifier) {
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
-    var showBottomSheet by remember { mutableStateOf(false) }
+    var showJoinCampaignSheet by remember { mutableStateOf(false) }
+    var showOfferSolutionSheet by remember { mutableStateOf(false) }
+    var solutionText by remember { mutableStateOf("") }
 
     val context = LocalContext.current
 
@@ -203,7 +206,7 @@ fun AboutIssue(name: String, modifier: Modifier) {
         )
 
         Button(
-            onClick = { showBottomSheet = true },
+            onClick = { showJoinCampaignSheet = true },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp)
@@ -215,9 +218,7 @@ fun AboutIssue(name: String, modifier: Modifier) {
         }
 
         OutlinedButton(
-            onClick = {
-                Toast.makeText(context, "To be implemented!", Toast.LENGTH_LONG).show()
-            },
+            onClick = { showOfferSolutionSheet = true },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 4.dp)
@@ -228,9 +229,9 @@ fun AboutIssue(name: String, modifier: Modifier) {
             )
         }
 
-        if (showBottomSheet) {
+        if (showJoinCampaignSheet) {
             ModalBottomSheet(
-                onDismissRequest = { showBottomSheet = false },
+                onDismissRequest = { showJoinCampaignSheet = false },
                 sheetState = sheetState,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -257,7 +258,7 @@ fun AboutIssue(name: String, modifier: Modifier) {
                 ) {
                     Button(
                         onClick = {
-                            showBottomSheet = false
+                            showJoinCampaignSheet = false
                             Toast.makeText(context, "You have joined this campaign!", Toast.LENGTH_LONG).show()
                         },
                         modifier = Modifier
@@ -271,7 +272,7 @@ fun AboutIssue(name: String, modifier: Modifier) {
                     }
 
                     OutlinedButton(
-                        onClick = { showBottomSheet = false },
+                        onClick = { showJoinCampaignSheet = false },
                         modifier = Modifier
                             .padding(vertical = 16.dp, horizontal = 4.dp)
                             .weight(1.0f)
@@ -284,6 +285,87 @@ fun AboutIssue(name: String, modifier: Modifier) {
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
+            }
+        }
+
+        if (showOfferSolutionSheet) {
+            ModalBottomSheet(
+                onDismissRequest = { showOfferSolutionSheet = false },
+                sheetState = sheetState,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Box(modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .align(Alignment.CenterHorizontally)) {
+                    Column {
+                        Text(
+                            text = "Offer Solution",
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+
+                        Text(
+                            text = "Suggest a solution to this issue by filling up this form",
+                            textAlign = TextAlign.Center,
+                            fontSize = 14.sp,
+                            modifier = Modifier
+                                .padding(top = 8.dp)
+                        )
+
+                        Text(
+                            text = "Brief description of the proposed solution",
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                        TextField(
+                            value = solutionText,
+                            onValueChange = { solutionText = it },
+                            minLines = 3,
+                            modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(16.dp),
+                            singleLine = false
+                        )
+
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            modifier = Modifier
+                                .padding(top = 8.dp)
+                        ) {
+                            Button(
+                                onClick = {
+                                    showOfferSolutionSheet = false
+                                    Toast.makeText(
+                                        context,
+                                        "Your solution has been offered!",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                },
+                                modifier = Modifier
+                                    .padding(vertical = 16.dp, horizontal = 4.dp)
+                                    .weight(1.0f)
+                            ) {
+                                Text(
+                                    text = "SUBMIT SOLUTION",
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+
+                            OutlinedButton(
+                                onClick = { showOfferSolutionSheet = false },
+                                modifier = Modifier
+                                    .padding(vertical = 16.dp, horizontal = 4.dp)
+                                    .weight(1.0f)
+                            ) {
+                                Text(
+                                    text = "CANCEL",
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                }
             }
         }
     }
