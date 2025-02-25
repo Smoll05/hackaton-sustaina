@@ -1,13 +1,16 @@
-package com.hackaton.sustaina
+package com.hackaton.sustaina.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.hackaton.sustaina.ui.login.LoginPage
+import com.hackaton.sustaina.ui.register.RegisterPage
 
 sealed class Routes(val route: String) {
     data object Login :  Routes("Login")
     data object Register : Routes("Register")
+    data object SignOut : Routes("Sign Out")
 }
 
 @Composable

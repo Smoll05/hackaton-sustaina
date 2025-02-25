@@ -1,9 +1,8 @@
-package com.hackaton.sustaina
+package com.hackaton.sustaina.ui.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,10 +16,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,9 +28,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.hackaton.sustaina.R
+import com.hackaton.sustaina.ui.navigation.Routes
 
 @Composable
-fun RegisterPage(navController: NavController, modifier: Modifier = Modifier) {
+fun LoginPage(navController: NavController, modifier: Modifier = Modifier) {
 
     var email by remember {
         mutableStateOf("")
@@ -43,15 +42,6 @@ fun RegisterPage(navController: NavController, modifier: Modifier = Modifier) {
         mutableStateOf("")
     }
 
-    Box(modifier = Modifier.padding(40.dp).fillMaxWidth()) {
-        Image(
-            painter = painterResource(R.drawable.icon_back),
-            contentDescription = "Back Button",
-            modifier = Modifier.size(50.dp).clickable {
-                navController.navigate(Routes.Login.route)
-            }
-        )
-    }
     Column(
         modifier = Modifier.fillMaxSize().padding(40.dp, 0.dp),
         verticalArrangement = Arrangement.Center,
@@ -73,7 +63,7 @@ fun RegisterPage(navController: NavController, modifier: Modifier = Modifier) {
         Spacer(Modifier.height(4.dp))
 
         Text(
-            text = "Join Sustaina!",
+            text = "Welcome back!",
             fontSize = 24.sp,
             fontWeight = FontWeight.SemiBold
         )
@@ -104,20 +94,58 @@ fun RegisterPage(navController: NavController, modifier: Modifier = Modifier) {
         Spacer(Modifier.height(20.dp))
 
         Button(
-            onClick = {},
+            onClick = { navController.navigate(Routes.SignOut.route)},
             modifier = Modifier.fillMaxWidth().height(50.dp),
             shape = RoundedCornerShape(5.dp)
         ) {
-            Text(text = "Register")
+            Text(text = "Login")
         }
 
         Spacer(Modifier.height(32.dp))
 
-        Row {
-            Text(text = "Already have an account? ");
-            Text(text = "Sign in here.", color = Color.Green, modifier = Modifier.clickable {
-                navController.navigate(Routes.Login.route)
-            })
+        Text(text = "Forgor Password?")
+
+        Spacer(Modifier.height(32.dp))
+
+        Text(text = "Or sign in with")
+
+        Spacer(Modifier.height(32.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Image(
+                painter = painterResource(R.drawable.logo_facebook),
+                contentDescription = "Facebook Logo",
+                modifier = Modifier.size(60.dp)
+            )
+            Image(
+                painter = painterResource(R.drawable.logo_google),
+                contentDescription = "Google Logo",
+                modifier = Modifier.size(60.dp)
+            )
+            Image(
+                painter = painterResource(R.drawable.logo_twitter),
+                contentDescription = "Google Logo",
+                modifier = Modifier.size(60.dp)
+            )
+        }
+
+        Spacer(Modifier.height(32.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text("Don't have an account? ")
+            Text(
+                "Register",
+                color = Color.Green,
+                modifier = Modifier.clickable {
+                    navController.navigate(Routes.Register.route)
+                }
+            )
         }
     }
 }
