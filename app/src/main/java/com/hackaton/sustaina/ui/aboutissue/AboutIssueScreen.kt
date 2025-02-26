@@ -1,6 +1,8 @@
-package com.hackaton.sustaina
+package com.hackaton.sustaina.ui.aboutissue
 
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.displayCutoutPadding
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -26,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,11 +45,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.hackaton.sustaina.R
 import com.hackaton.sustaina.ui.theme.SustainaTheme
+import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AboutIssue(name: String, modifier: Modifier) {
+fun AboutIssue(navController: NavController, viewModel: AboutIssueViewModel = hiltViewModel()) {
+    val uiState by viewModel.uiState.collectAsState()
+
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var showJoinCampaignSheet by remember { mutableStateOf(false) }
@@ -71,7 +81,7 @@ fun AboutIssue(name: String, modifier: Modifier) {
         )
 
         Text(
-            text = "Campaign Name",
+            text = uiState.campaignName,
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
@@ -79,7 +89,7 @@ fun AboutIssue(name: String, modifier: Modifier) {
         )
 
         Text(
-            text = "Campaign Organizer",
+            text = uiState.campaignOrganizer,
             fontSize = 18.sp,
             modifier = Modifier.padding(top = 8.dp)
         )
@@ -99,13 +109,15 @@ fun AboutIssue(name: String, modifier: Modifier) {
                         contentDescription = "",
                         modifier = Modifier.size(32.dp)
                     )
-                    Text(
-                        text = "Mar 1",
-                        fontSize = 18.sp,
-                        modifier = Modifier
-                            .padding(start = 8.dp)
-                            .align(Alignment.CenterVertically)
-                    )
+                    uiState.campaignStartDate?.format(DateTimeFormatter.ofPattern("MMM dd"))?.let {
+                        Text(
+                            text = it,
+                            fontSize = 18.sp,
+                            modifier = Modifier
+                                .padding(start = 8.dp)
+                                .align(Alignment.CenterVertically)
+                        )
+                    }
                 }
             }
 
@@ -121,7 +133,7 @@ fun AboutIssue(name: String, modifier: Modifier) {
                         modifier = Modifier.size(32.dp)
                     )
                     Text(
-                        text = "UP Cebu",
+                        text = uiState.campaignVenue,
                         fontSize = 18.sp,
                         modifier = Modifier
                             .padding(start = 8.dp)
@@ -146,7 +158,7 @@ fun AboutIssue(name: String, modifier: Modifier) {
                 .fillMaxWidth()
         )
         Text(
-            text = stringResource(R.string.placeholder)
+            text = uiState.campaignAbout
         )
 
         HorizontalDivider(
@@ -162,7 +174,7 @@ fun AboutIssue(name: String, modifier: Modifier) {
                 .fillMaxWidth()
         )
         Text(
-            text = "University of the Philippines - Cebu",
+            text = uiState.campaignVenue,
             fontSize = 28.sp,
             fontWeight = FontWeight.ExtraBold,
             modifier = Modifier.padding(top = 4.dp)
@@ -199,7 +211,7 @@ fun AboutIssue(name: String, modifier: Modifier) {
                 .padding(top = 4.dp)
         )
         Text(
-            text = "UP Cebu - Computer Science Guild",
+            text = uiState.campaignOrganizer,
             fontWeight = FontWeight.SemiBold,
             fontSize = 20.sp,
             modifier = Modifier.padding(top = 8.dp)
@@ -371,11 +383,11 @@ fun AboutIssue(name: String, modifier: Modifier) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun AboutIssuePreview() {
-    SustainaTheme {
-        AboutIssue("Android", modifier = Modifier)
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun AboutIssuePreview() {
+//    SustainaTheme {
+//        AboutIssue()
+//    }
+//}
 
