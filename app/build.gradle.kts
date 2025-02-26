@@ -2,6 +2,11 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.gms.google-services")
+
+    // Dependency Injection With Hilt
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -50,6 +55,11 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation.runtime.android)
+    implementation(libs.firebase.auth)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
     implementation(libs.androidx.navigation.runtime.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -58,4 +68,16 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
+
+    // Dependency Injection Hilt
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+}
+
+kapt {
+    correctErrorTypes = true
 }

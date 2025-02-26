@@ -30,10 +30,13 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.hackaton.sustaina.ui.navigation.Routes
+import com.hackaton.sustaina.ui.theme.LeafyGreen
 
 @Composable
 fun LoginPage(navController: NavController, modifier: Modifier = Modifier) {
@@ -58,17 +61,17 @@ fun LoginPage(navController: NavController, modifier: Modifier = Modifier) {
             modifier = Modifier.size(150.dp)
         )
 
-        Text(
-            text = "Sustaina",
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold
-        )
+//        Text(
+//            text = "Sustaina",
+//            fontSize = 32.sp,
+//            fontWeight = FontWeight.Bold
+//        )
 
-        Spacer(Modifier.height(4.dp))
+//        Spacer(Modifier.height(4.dp))
 
         Text(
             text = "Welcome back!",
-            fontSize = 24.sp,
+            fontSize = 32.sp,
             fontWeight = FontWeight.SemiBold
         )
 
@@ -111,7 +114,17 @@ fun LoginPage(navController: NavController, modifier: Modifier = Modifier) {
 
         Spacer(Modifier.height(32.dp))
 
-        Text(text = "Or sign in with")
+        Row {
+            Text(
+                text = "                    ",
+                textDecoration = TextDecoration.LineThrough
+            )
+            Text(text = "  Or sign in with  ")
+            Text(
+                text = "                    ",
+                textDecoration = TextDecoration.LineThrough
+            )
+        }
 
         Spacer(Modifier.height(32.dp))
 
@@ -145,10 +158,11 @@ fun LoginPage(navController: NavController, modifier: Modifier = Modifier) {
             Text("Don't have an account? ")
             Text(
                 "Register",
-                color = Color.Green,
+                color = LeafyGreen,
                 modifier = Modifier.clickable {
                     navController.navigate(Routes.Register.route)
-                }
+                },
+                textDecoration = TextDecoration.Underline
             )
         }
     }
