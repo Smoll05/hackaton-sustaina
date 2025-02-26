@@ -1,6 +1,7 @@
 package com.hackaton.sustaina.ui.landing
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.displayCutoutPadding
@@ -28,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hackaton.sustaina.R
+import com.hackaton.sustaina.ui.navigation.Routes
 import com.hackaton.sustaina.ui.theme.SustainaTheme
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -113,7 +115,7 @@ fun LandingPage(navController: NavController, upcomingCampaigns: List<String>, v
                 LazyColumn(modifier = Modifier
                     .padding(16.dp)) {
                     items(uiState.upcomingCampaigns) {
-                        UpcomingCampaign(it.campaignName, it.campaignStartDate!!)
+                        UpcomingCampaign(it.campaignId, it.campaignName, it.campaignStartDate!!, navController)
                     }
                 }
             }
@@ -122,10 +124,13 @@ fun LandingPage(navController: NavController, upcomingCampaigns: List<String>, v
 }
 
 @Composable
-fun UpcomingCampaign(name: String, date: LocalDateTime) {
+fun UpcomingCampaign(campaignId: String, name: String, date: LocalDateTime, navController: NavController) {
     val formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy hh:mm a")
     ElevatedCard(modifier = Modifier
         .fillMaxWidth()
+        .clickable {
+            navController.navigate("AboutIssue/${campaignId}")
+        }
         .padding(vertical = 8.dp)){
         Column(modifier = Modifier.padding(22.dp)) {
 
@@ -145,13 +150,13 @@ fun UpcomingCampaign(name: String, date: LocalDateTime) {
 
 
 //@Preview(showBackground = true)
-@Composable
-fun UpcomingCampaignPreview() {
-    SustainaTheme {
-        val date = LocalDateTime.of(2025, 3, 5, 13, 0)
-        UpcomingCampaign("UP Hackathon Presentation", date)
-    }
-}
+//@Composable
+//fun UpcomingCampaignPreview() {
+//    SustainaTheme {
+//        val date = LocalDateTime.of(2025, 3, 5, 13, 0)
+//        UpcomingCampaign("UP Hackathon Presentation", date)
+//    }
+//}
 
 @Preview(showBackground = true)
 @Composable

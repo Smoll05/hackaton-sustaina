@@ -1,9 +1,13 @@
 package com.hackaton.sustaina.ui.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.hackaton.sustaina.LoginPage
 import com.hackaton.sustaina.RegisterPage
 import com.hackaton.sustaina.ui.aboutissue.AboutIssue
@@ -14,7 +18,7 @@ sealed class Routes(val route: String) {
     data object Register : Routes("Register")
     data object Landing : Routes("Landing")
     data object SignOut : Routes("Sign Out")
-    data object AboutIssue : Routes("About Issue")
+    data object AboutIssue : Routes("AboutIssue/{campaignId}")
 }
 
 @Composable
@@ -33,7 +37,10 @@ fun Navigation() {
 //            events = emptyList()
             LandingPage(navController = navController, upcomingCampaigns = events)
         }
-        composable(Routes.AboutIssue.route) {
+        composable(
+            route = Routes.AboutIssue.route,
+            arguments = listOf(navArgument("campaignId") { type = NavType.StringType })
+        ) {
             AboutIssue(navController = navController)
         }
     }

@@ -218,6 +218,7 @@ fun AboutIssue(navController: NavController, viewModel: AboutIssueViewModel = hi
             modifier = Modifier.padding(top = 8.dp)
         )
 
+        // TODO: change state depending on user status
         Button(
             onClick = { showJoinCampaignSheet = true },
             modifier = Modifier

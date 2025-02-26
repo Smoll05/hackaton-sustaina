@@ -9,6 +9,7 @@ class CampaignDatabaseSource {
         when (campaignId) {
             "UP12345" -> {
                 return CampaignState(
+                    campaignId = "UP12345",
                     campaignName = "Komsai Week Hackathon Presentation",
                     campaignOrganizer = "UP Computer Science Guild",
                     campaignStartDate = LocalDateTime.of(2025, 3, 5, 13, 0),
@@ -19,6 +20,7 @@ class CampaignDatabaseSource {
             }
             "MDTM12345" -> {
                 return CampaignState(
+                    campaignId = "MDTM12345",
                     campaignName = "Midterm Examinations",
                     campaignOrganizer = "CIT-U",
                     campaignStartDate = LocalDateTime.of(2025, 1, 5, 7, 0),
