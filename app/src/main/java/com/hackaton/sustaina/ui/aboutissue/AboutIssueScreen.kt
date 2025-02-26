@@ -1,8 +1,6 @@
 package com.hackaton.sustaina.ui.aboutissue
 
-import android.os.Build
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,17 +37,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.hackaton.sustaina.R
-import com.hackaton.sustaina.ui.theme.SustainaTheme
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -181,7 +175,7 @@ fun AboutIssue(navController: NavController, viewModel: AboutIssueViewModel = hi
             modifier = Modifier.padding(top = 4.dp)
         )
         Text(
-            text = stringResource(R.string.address),
+            text = uiState.campaignAddress,
             fontWeight = FontWeight.SemiBold,
             fontSize = 16.sp
         )
@@ -258,7 +252,7 @@ fun AboutIssue(navController: NavController, viewModel: AboutIssueViewModel = hi
                 )
 
                 Text(
-                    text = "Are you sure you want to join " + "Campaign" + "?",
+                    text = "Are you sure you want to join " + uiState.campaignName + "?",
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(top = 8.dp)

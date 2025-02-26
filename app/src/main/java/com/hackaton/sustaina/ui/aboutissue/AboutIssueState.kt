@@ -9,5 +9,5 @@ data class CampaignState(
     val campaignStartDate: LocalDateTime? = null,
     val campaignAbout: String = "",
     val campaignVenue: String = "",
-    val campaignLocation: String = ""
+    val campaignAddress: String = ""
     )
