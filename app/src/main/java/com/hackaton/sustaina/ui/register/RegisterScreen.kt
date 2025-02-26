@@ -67,8 +67,8 @@ fun RegisterPage(navController: NavController, modifier: Modifier = Modifier) {
 
     val isDarkMode = isSystemInDarkTheme()
 
-    val backIcon = if (isDarkMode) R.drawable.light_icon_back else R.drawable.icon_back
-//    val backIcon = R.drawable.icon_back
+//    val backIcon = if (isDarkMode) R.drawable.light_icon_back else R.drawable.icon_back
+    val backIcon = R.drawable.icon_back  // Default to light theme for now to focus on core features
 
     Box(
         modifier = Modifier
