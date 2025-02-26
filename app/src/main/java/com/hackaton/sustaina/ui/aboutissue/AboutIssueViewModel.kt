@@ -12,7 +12,7 @@ import javax.inject.Inject
 class AboutIssueViewModel @Inject constructor (
     private val repository: CampaignRepository
 ) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(repository.getCampaignDetails("TESTID"))
+    // TODO: get campaign id (somehow)
+    private val _uiState = MutableStateFlow(repository.getCampaignDetails("UP12345"))
     val uiState = _uiState.asStateFlow()
 }

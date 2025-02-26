@@ -1,12 +1,9 @@
-package com.hackaton.sustaina
+package com.hackaton.sustaina.ui.landing
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.displayCutoutPadding
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,6 +14,9 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -24,20 +24,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.hackaton.sustaina.R
 import com.hackaton.sustaina.ui.theme.SustainaTheme
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-// TODO: Temporary; for testing purposes
-data class Event(
-    val name: String,
-    val date: LocalDateTime
-)
-
 @Composable
-fun LandingPage(navController: NavController, upcomingEvents: List<Event>) {
+fun LandingPage(navController: NavController, upcomingCampaigns: List<String>, viewModel: LandingPageViewModel = hiltViewModel()) {
+    LaunchedEffect(upcomingCampaigns) {
+        upcomingCampaigns.let { viewModel.loadUpcomingCampaigns(it) }
+    }
+
+    val uiState by viewModel.uiState.collectAsState()
+
     Column(modifier = Modifier
         .padding(all = 24.dp)
         .fillMaxWidth()
@@ -65,21 +67,21 @@ fun LandingPage(navController: NavController, upcomingEvents: List<Event>) {
 
                 Column {
                     Text(
-                        text = "Level 23",
+                        text = "Level " + uiState.level,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(top = 16.dp, start = 16.dp)
                     )
 
                     LinearProgressIndicator(
-                        progress = {0.420f},
+                        progress = { uiState.progress },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp, vertical = 8.dp)
                     )
 
                     Text(
-                        text = "420 / 1000 EXP",
+                        text = "${uiState.exp} / ${uiState.expToNextLvl} EXP",
                         fontSize = 16.sp,
                         modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
                     )
@@ -98,14 +100,23 @@ fun LandingPage(navController: NavController, upcomingEvents: List<Event>) {
                 modifier = Modifier.padding(top = 20.dp, start = 16.dp)
             )
 
-            LazyColumn(modifier = Modifier
-                .padding(16.dp)) {
-                items(upcomingEvents) {
-                    UpcomingCampaign(it.name, it.date)
+            if (upcomingCampaigns.isEmpty()) {
+                Text(
+                    text = "No Upcoming Campaigns!",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(vertical = 22.dp)
+                )
+            } else {
+                LazyColumn(modifier = Modifier
+                    .padding(16.dp)) {
+                    items(uiState.upcomingCampaigns) {
+                        UpcomingCampaign(it.campaignName, it.campaignStartDate!!)
+                    }
                 }
             }
-
-
         }
     }
 }
@@ -145,8 +156,8 @@ fun UpcomingCampaignPreview() {
 @Preview(showBackground = true)
 @Composable
 fun LandingPagePreview() {
-    val events: List<Event> = listOf(Event("UP Hackathon", LocalDateTime.now()), Event("Midterms", LocalDateTime.now()))
+    val events: List<String> = listOf("UP12345", "MDTM12345")
     SustainaTheme {
-        LandingPage(navController = rememberNavController(), events)
+        LandingPage(navController = rememberNavController(), upcomingCampaigns = emptyList())
     }
 }

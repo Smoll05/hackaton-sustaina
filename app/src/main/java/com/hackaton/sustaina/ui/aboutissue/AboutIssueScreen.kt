@@ -52,7 +52,6 @@ import com.hackaton.sustaina.R
 import com.hackaton.sustaina.ui.theme.SustainaTheme
 import java.time.format.DateTimeFormatter
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutIssue(navController: NavController, viewModel: AboutIssueViewModel = hiltViewModel()) {
@@ -62,6 +61,8 @@ fun AboutIssue(navController: NavController, viewModel: AboutIssueViewModel = hi
     val scope = rememberCoroutineScope()
     var showJoinCampaignSheet by remember { mutableStateOf(false) }
     var showOfferSolutionSheet by remember { mutableStateOf(false) }
+
+    // TODO: this is user-based
     var solutionText by remember { mutableStateOf("") }
 
     val context = LocalContext.current
