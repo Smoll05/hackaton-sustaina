@@ -7,10 +7,12 @@ import androidx.navigation.compose.rememberNavController
 import com.hackaton.sustaina.LoginPage
 import com.hackaton.sustaina.RegisterPage
 import com.hackaton.sustaina.ui.aboutissue.AboutIssue
+import com.hackaton.sustaina.ui.camera.CameraScreen
 
 sealed class Routes(val route: String) {
     data object Login :  Routes("Login")
     data object Register : Routes("Register")
+    data object Camera : Routes("Camera")
     data object SignOut : Routes("Sign Out")
     data object AboutIssue : Routes("About Issue")
 }
@@ -24,6 +26,9 @@ fun Navigation() {
         }
         composable(Routes.Register.route) {
             RegisterPage(navController = navController)
+        }
+        composable(Routes.Camera.route) {
+            CameraScreen(navController = navController)
         }
         composable(Routes.AboutIssue.route) {
             AboutIssue(navController = navController)
