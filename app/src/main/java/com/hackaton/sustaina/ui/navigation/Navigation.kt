@@ -18,7 +18,7 @@ sealed class Routes(val route: String) {
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Routes.AboutIssue.route) {
+    NavHost(navController = navController, startDestination = Routes.Login.route) {
         composable(Routes.Login.route) {
             LoginPage(navController = navController)
         }
