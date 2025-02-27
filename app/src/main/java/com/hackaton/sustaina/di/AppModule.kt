@@ -1,8 +1,6 @@
 package com.hackaton.sustaina.di
 
 import com.google.firebase.auth.FirebaseAuth
-import com.hackaton.sustaina.data.AUTH_PORT
-import com.hackaton.sustaina.data.LOCAL_HOST
 import com.hackaton.sustaina.data.datasource.CampaignDatabaseSource
 import com.hackaton.sustaina.data.datasource.FirebaseAuthSource
 import com.hackaton.sustaina.data.repository.AuthRepository
