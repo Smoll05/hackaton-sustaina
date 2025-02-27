@@ -39,11 +39,14 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.hackaton.sustaina.R
+import com.hackaton.sustaina.ui.theme.SustainaTheme
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,7 +55,6 @@ fun AboutIssue(navController: NavController, viewModel: AboutIssueViewModel = hi
     val uiState by viewModel.uiState.collectAsState()
 
     val sheetState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
     var showJoinCampaignSheet by remember { mutableStateOf(false) }
     var showOfferSolutionSheet by remember { mutableStateOf(false) }
 
@@ -102,7 +104,9 @@ fun AboutIssue(navController: NavController, viewModel: AboutIssueViewModel = hi
                     Image(
                         painter = painterResource(R.drawable.calendar),
                         contentDescription = "",
-                        modifier = Modifier.size(32.dp)
+                        modifier = Modifier
+                            .size(32.dp)
+                            .align(Alignment.CenterVertically)
                     )
                     uiState.campaignStartDate?.format(DateTimeFormatter.ofPattern("MMM dd"))?.let {
                         Text(
@@ -379,11 +383,11 @@ fun AboutIssue(navController: NavController, viewModel: AboutIssueViewModel = hi
     }
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun AboutIssuePreview() {
-//    SustainaTheme {
-//        AboutIssue()
-//    }
-//}
+@Preview(showBackground = true)
+@Composable
+fun AboutIssuePreview() {
+    SustainaTheme {
+        AboutIssue(rememberNavController())
+    }
+}
 
