@@ -79,48 +79,42 @@ fun LoginPage(navController: NavController,
     }
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(40.dp, 0.dp),
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
-            painter = painterResource(R.drawable.boy_planting_sapling),
-            contentDescription = "Company Logo",
-            contentScale = ContentScale.Fit,
-            modifier = Modifier.size(150.dp)
-        )
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-         Image(
-             painter = painterResource(id = R.drawable.banner_image),
-             contentDescription = "Login Banner",
-             contentScale = ContentScale.Crop,
-             modifier = Modifier
-                 .fillMaxWidth()
-                 .height(450.dp)
-         )
-
-        Column(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .background(
-                    color = MaterialTheme.colorScheme.background,
-                    shape = RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp)
-                )
-                .padding(40.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
         ) {
             Image(
-                painter = painterResource(R.drawable.boy_planting_sapling),
-                contentDescription = "Company Logo",
-                contentScale = ContentScale.Fit,
-                modifier = Modifier.size(150.dp)
+                painter = painterResource(id = R.drawable.banner_image),
+                contentDescription = "Login Banner",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(450.dp)
             )
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .background(
+                        color = MaterialTheme.colorScheme.background,
+                        shape = RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp)
+                    )
+                    .padding(40.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.boy_planting_sapling),
+                    contentDescription = "Company Logo",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.size(150.dp)
+                )
 
 //        Text(
 //            text = "Sustaina",
@@ -130,143 +124,145 @@ fun LoginPage(navController: NavController,
 
 //        Spacer(Modifier.height(4.dp))
 
-            Text(
-                text = "Welcome back!",
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = 32.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-
-            Spacer(Modifier.height(50.dp))
-
-            OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                label = {
-                    Text(
-                        "Email",
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                },
-                singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.background),
-                shape = RoundedCornerShape(10.dp),
-                textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                    cursorColor = MaterialTheme.colorScheme.primary,
-                    focusedLabelColor = MaterialTheme.colorScheme.primary,
-                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                )
-            )
-
-            Spacer(Modifier.height(15.dp))
-
-            OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                label = {
-                    Text(
-                        "Password",
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.background),
-                shape = RoundedCornerShape(10.dp),
-                textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                    cursorColor = MaterialTheme.colorScheme.primary,
-                    focusedLabelColor = MaterialTheme.colorScheme.primary,
-                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                ),
-                visualTransformation = PasswordVisualTransformation()
-            )
-
-            Spacer(Modifier.height(20.dp))
-
-        Button(
-            onClick = {loginViewModel.login(email, password)},
-            modifier = Modifier.fillMaxWidth().height(50.dp),
-            shape = RoundedCornerShape(5.dp)
-        ) {
-            Text(text = "Login")
-        }
-
-            Spacer(Modifier.height(30.dp))
-
-            Text(
-                text = "Forgor Password?",
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
-            Spacer(Modifier.height(30.dp))
-
-            Row {
                 Text(
-                    text = "                    ",
-                    textDecoration = TextDecoration.LineThrough,
-                    color = MaterialTheme.colorScheme.onBackground
+                    text = "Welcome back!",
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.SemiBold
                 )
-                Text(
-                    text = "  Or sign in with  ",
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-                Text(
-                    text = "                    ",
-                    textDecoration = TextDecoration.LineThrough,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-            }
 
-            Spacer(Modifier.height(30.dp))
+                Spacer(Modifier.height(50.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.logo_facebook),
-                    contentDescription = "Facebook Logo",
-                    modifier = Modifier.size(40.dp)
-                )
-                Image(
-                    painter = painterResource(R.drawable.logo_google),
-                    contentDescription = "Google Logo",
-                    modifier = Modifier.size(40.dp)
-                )
-                Image(
-                    painter = painterResource(R.drawable.logo_twitter),
-                    contentDescription = "Google Logo",
-                    modifier = Modifier.size(40.dp)
-                )
-            }
-
-            Spacer(Modifier.height(60.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "Don't have an account? ",
-                    color = MaterialTheme.colorScheme.onBackground)
-                Text(
-                    text = "Register",
-                    color = MaterialTheme.colorScheme.surfaceVariant,
-                    modifier = Modifier.clickable {
-                        navController.navigate(Routes.Register.route)
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = {
+                        Text(
+                            "Email",
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
                     },
-                    textDecoration = TextDecoration.Underline
+                    singleLine = true,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.background),
+                    shape = RoundedCornerShape(10.dp),
+                    textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                        cursorColor = MaterialTheme.colorScheme.primary,
+                        focusedLabelColor = MaterialTheme.colorScheme.primary,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    )
                 )
-            }
-        }
 
+                Spacer(Modifier.height(15.dp))
+
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = {
+                        Text(
+                            "Password",
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.background),
+                    shape = RoundedCornerShape(10.dp),
+                    textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                        cursorColor = MaterialTheme.colorScheme.primary,
+                        focusedLabelColor = MaterialTheme.colorScheme.primary,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    ),
+                    visualTransformation = PasswordVisualTransformation()
+                )
+
+                Spacer(Modifier.height(20.dp))
+
+                Button(
+                    onClick = { loginViewModel.login(email, password) },
+                    modifier = Modifier.fillMaxWidth().height(50.dp),
+                    shape = RoundedCornerShape(5.dp)
+                ) {
+                    Text(text = "Login")
+                }
+
+                Spacer(Modifier.height(30.dp))
+
+                Text(
+                    text = "Forgor Password?",
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+                Spacer(Modifier.height(30.dp))
+
+                Row {
+                    Text(
+                        text = "                    ",
+                        textDecoration = TextDecoration.LineThrough,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                    Text(
+                        text = "  Or sign in with  ",
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                    Text(
+                        text = "                    ",
+                        textDecoration = TextDecoration.LineThrough,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+
+                Spacer(Modifier.height(30.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.logo_facebook),
+                        contentDescription = "Facebook Logo",
+                        modifier = Modifier.size(40.dp)
+                    )
+                    Image(
+                        painter = painterResource(R.drawable.logo_google),
+                        contentDescription = "Google Logo",
+                        modifier = Modifier.size(40.dp)
+                    )
+                    Image(
+                        painter = painterResource(R.drawable.logo_twitter),
+                        contentDescription = "Google Logo",
+                        modifier = Modifier.size(40.dp)
+                    )
+                }
+
+                Spacer(Modifier.height(60.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Don't have an account? ",
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                    Text(
+                        text = "Register",
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        modifier = Modifier.clickable {
+                            navController.navigate(Routes.Register.route)
+                        },
+                        textDecoration = TextDecoration.Underline
+                    )
+                }
+            }
+
+        }
     }
 }

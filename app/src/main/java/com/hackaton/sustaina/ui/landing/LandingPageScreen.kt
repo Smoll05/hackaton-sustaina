@@ -1,6 +1,7 @@
 package com.hackaton.sustaina.ui.landing
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,7 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hackaton.sustaina.R
-import com.hackaton.sustaina.ui.theme.DarkGreen
+import com.hackaton.sustaina.ui.navigation.Routes
 import com.hackaton.sustaina.ui.theme.LeafyGreen
 import com.hackaton.sustaina.ui.theme.NeonGreen
 import com.hackaton.sustaina.ui.theme.SustainaTheme
@@ -39,12 +41,8 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun LandingPageScreen(navController: NavController, upcomingCampaigns: List<String>, viewModel: LandingPageViewModel = hiltViewModel()) {
-    LaunchedEffect(upcomingCampaigns) {
-        upcomingCampaigns.let { viewModel.loadUpcomingCampaigns(it) }
-    }
 
     val uiState by viewModel.uiState.collectAsState()
-    Log.d("LandingPageScreen", "Progress Value: ${uiState.progress}")
 
     Column(modifier = Modifier
         .padding(all = 24.dp)
@@ -73,14 +71,14 @@ fun LandingPageScreen(navController: NavController, upcomingCampaigns: List<Stri
 
                 Column {
                     Text(
-                        text = "Level " + uiState.level,
+                        text = "Level " + (uiState?.user?.userLevel ?: 0),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(top = 16.dp, start = 16.dp)
                     )
 
                     LinearProgressIndicator(
-                        progress = { uiState.progress },
+                        progress = { uiState?.progress ?: 0f},
                         color = LeafyGreen,
                         trackColor = NeonGreen,
                         modifier = Modifier
@@ -89,7 +87,7 @@ fun LandingPageScreen(navController: NavController, upcomingCampaigns: List<Stri
                     )
 
                     Text(
-                        text = "${uiState.exp} / ${uiState.expToNextLvl} EXP",
+                        text = "${uiState?.user?.userExp} / 1000} EXP",
                         fontSize = 16.sp,
                         modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
                     )
@@ -120,8 +118,10 @@ fun LandingPageScreen(navController: NavController, upcomingCampaigns: List<Stri
             } else {
                 LazyColumn(modifier = Modifier
                     .padding(16.dp)) {
-                    items(uiState.upcomingCampaigns) {
-                        UpcomingCampaign(it.campaignId, it.campaignName, it.campaignStartDate!!, navController)
+                    uiState?.let {
+                        items(it.upcomingCampaigns) {
+                            UpcomingCampaign(it.campaignId, it.campaignName, it.campaignStartDate!!, navController)
+                        }
                     }
                 }
             }

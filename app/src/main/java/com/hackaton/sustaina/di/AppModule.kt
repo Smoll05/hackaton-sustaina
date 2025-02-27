@@ -5,8 +5,10 @@ import com.hackaton.sustaina.data.AUTH_PORT
 import com.hackaton.sustaina.data.LOCAL_HOST
 import com.hackaton.sustaina.data.datasource.CampaignDatabaseSource
 import com.hackaton.sustaina.data.datasource.FirebaseAuthSource
+import com.hackaton.sustaina.data.datasource.UserDatabaseSource
 import com.hackaton.sustaina.data.repository.AuthRepository
 import com.hackaton.sustaina.data.repository.CampaignRepository
+import com.hackaton.sustaina.data.repository.UserRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,6 +27,12 @@ object AppModule {
     @Singleton
     fun provideAuthRepository(firebaseAuth: FirebaseAuthSource): AuthRepository {
         return AuthRepository(firebaseAuth)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(): UserRepository {
+        return UserRepository(UserDatabaseSource())
     }
 
     @Provides

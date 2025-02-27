@@ -2,7 +2,9 @@ package com.hackaton.sustaina.ui.landing
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hackaton.sustaina.data.repository.AuthRepository
 import com.hackaton.sustaina.data.repository.CampaignRepository
+import com.hackaton.sustaina.data.repository.UserRepository
 import com.hackaton.sustaina.domain.models.Campaign
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,17 +14,29 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LandingPageViewModel @Inject constructor(
-    private val repository: CampaignRepository
-) : ViewModel() {
+    userRepo: UserRepository,
+    campaignRepo: CampaignRepository,
+    auth: AuthRepository,
 
-    private val _uiState = MutableStateFlow(LandingPageState())
+    ) : ViewModel() {
+    val user = auth.getCurrentUser()
+
+    private val _uiState: MutableStateFlow<LandingPageState?> = MutableStateFlow<LandingPageState?>(null)
     val uiState = _uiState.asStateFlow()
 
-    fun loadUpcomingCampaigns(campaignIds: List<String>) {
-        viewModelScope.launch {
-            val campaigns = mutableListOf<Campaign>()
-            campaignIds.forEach{ campaigns.add(repository.getCampaignDetails(it)) }
-            _uiState.value = _uiState.value.copy(upcomingCampaigns = campaigns)
+    init {
+        val user = auth.getCurrentUser()
+        if (user != null) {
+            val userData = userRepo.getUserFromId(user.uid)
+            val campaigns: MutableList<Campaign> = mutableListOf()
+
+            userData.userUpcomingCampaigns.forEach { campaigns.add(campaignRepo.getCampaignDetails(it)) }
+
+            _uiState.value = LandingPageState(
+                user = userData,
+                progress = userData.userExp.toFloat() / 1000,
+                upcomingCampaigns = campaigns.toList()
+            )
         }
     }
 }
