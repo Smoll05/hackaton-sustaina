@@ -41,8 +41,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.hackaton.sustaina.ui.login.LoginViewModel
 import com.hackaton.sustaina.ui.navigation.Routes
 import com.hackaton.sustaina.ui.theme.LeafyGreen
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.hackaton.sustaina.ui.login.LoginState
 
 import androidx.compose.ui.tooling.preview.Preview
 
@@ -55,7 +58,9 @@ fun PreviewLoginPage() {
 
 
 @Composable
-fun LoginPage(navController: NavController, modifier: Modifier = Modifier) {
+fun LoginPage(navController: NavController,
+              modifier: Modifier = Modifier,
+              loginViewModel: LoginViewModel = hiltViewModel()) {
 
     var email by remember {
         mutableStateOf("")
@@ -65,6 +70,25 @@ fun LoginPage(navController: NavController, modifier: Modifier = Modifier) {
         mutableStateOf("")
     }
 
+    val loginState by loginViewModel.loginState.collectAsState()
+
+    LaunchedEffect(loginState) {
+        if (loginState is LoginState.Success) {
+            navController.navigate(Routes.Landing.route)
+        }
+    }
+
+    Column(
+        modifier = Modifier.fillMaxSize().padding(40.dp, 0.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(R.drawable.boy_planting_sapling),
+            contentDescription = "Company Logo",
+            contentScale = ContentScale.Fit,
+            modifier = Modifier.size(150.dp)
+        )
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -168,7 +192,7 @@ fun LoginPage(navController: NavController, modifier: Modifier = Modifier) {
             Spacer(Modifier.height(20.dp))
 
         Button(
-            onClick = {navController.navigate(Routes.Landing.route)},
+            onClick = {loginViewModel.login(email, password)},
             modifier = Modifier.fillMaxWidth().height(50.dp),
             shape = RoundedCornerShape(5.dp)
         ) {
