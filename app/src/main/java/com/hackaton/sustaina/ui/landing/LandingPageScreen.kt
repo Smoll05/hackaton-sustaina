@@ -1,0 +1,174 @@
+package com.hackaton.sustaina.ui.landing
+
+import android.util.Log
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.displayCutoutPadding
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.hackaton.sustaina.R
+import com.hackaton.sustaina.ui.theme.DarkGreen
+import com.hackaton.sustaina.ui.theme.LeafyGreen
+import com.hackaton.sustaina.ui.theme.NeonGreen
+import com.hackaton.sustaina.ui.theme.SustainaTheme
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
+@Composable
+fun LandingPageScreen(navController: NavController, upcomingCampaigns: List<String>, viewModel: LandingPageViewModel = hiltViewModel()) {
+    LaunchedEffect(upcomingCampaigns) {
+        upcomingCampaigns.let { viewModel.loadUpcomingCampaigns(it) }
+    }
+
+    val uiState by viewModel.uiState.collectAsState()
+    Log.d("LandingPageScreen", "Progress Value: ${uiState.progress}")
+
+    Column(modifier = Modifier
+        .padding(all = 24.dp)
+        .fillMaxWidth()
+        .displayCutoutPadding()) {
+
+        Text(
+            text = "Landing Page",
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        ElevatedCard(modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 22.dp)) {
+
+            Row {
+                Image(
+                    painter = painterResource(R.drawable.medal),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(60.dp)
+                        .align(Alignment.CenterVertically)
+                        .padding(start = 8.dp)
+                )
+
+                Column {
+                    Text(
+                        text = "Level " + uiState.level,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(top = 16.dp, start = 16.dp)
+                    )
+
+                    LinearProgressIndicator(
+                        progress = { uiState.progress },
+                        color = LeafyGreen,
+                        trackColor = NeonGreen,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
+
+                    Text(
+                        text = "${uiState.exp} / ${uiState.expToNextLvl} EXP",
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
+                    )
+                }
+            }
+        }
+
+        Card(modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp)) {
+
+            Text(
+                text = "Upcoming Campaigns",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 20.dp, start = 16.dp)
+            )
+
+            if (upcomingCampaigns.isEmpty()) {
+                Text(
+                    text = "No Upcoming Campaigns!",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(vertical = 22.dp)
+                )
+            } else {
+                LazyColumn(modifier = Modifier
+                    .padding(16.dp)) {
+                    items(uiState.upcomingCampaigns) {
+                        UpcomingCampaign(it.campaignId, it.campaignName, it.campaignStartDate!!, navController)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun UpcomingCampaign(campaignId: String, name: String, date: LocalDateTime, navController: NavController) {
+    val formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy hh:mm a")
+    ElevatedCard(modifier = Modifier
+        .fillMaxWidth()
+        .clickable {
+            navController.navigate("AboutIssue/${campaignId}")
+        }
+        .padding(vertical = 8.dp)){
+        Column(modifier = Modifier.padding(22.dp)) {
+
+            Text(
+                text = name,
+                fontWeight = FontWeight.Bold,
+                fontSize = 22.sp
+            )
+
+            Text(
+                text = "Starts in " + formatter.format(date),
+                fontSize = 14.sp
+            )
+        }
+    }
+}
+
+
+//@Preview(showBackground = true)
+//@Composable
+//fun UpcomingCampaignPreview() {
+//    SustainaTheme {
+//        val date = LocalDateTime.of(2025, 3, 5, 13, 0)
+//        UpcomingCampaign("UP Hackathon Presentation", date)
+//    }
+//}
+
+@Preview(showBackground = true)
+@Composable
+fun LandingPagePreview() {
+    val events: List<String> = listOf("UP12345", "MDTM12345")
+    SustainaTheme {
+        LandingPageScreen(navController = rememberNavController(), upcomingCampaigns = emptyList())
+    }
+}

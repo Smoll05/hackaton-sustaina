@@ -47,8 +47,11 @@ sealed class Routes(val route: String) {
                 navController = navController,
                 startDestination = Routes.Login.route
             ) {
-                composable(Routes.AboutIssue.route) {
-                    LandingPage(navController = navController)
+                // TODO: pass upcoming campaigns here (IDs)
+                composable(Routes.Landing.route) {
+                    var events: List<String> = listOf("UP12345", "MDTM12345")
+//            events = emptyList()
+                    LandingPageScreen(navController = navController, upcomingCampaigns = events)
                 }
                 composable(Routes.Camera.route) {
                     CameraScreen(navController = navController)

@@ -42,6 +42,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hackaton.sustaina.ui.navigation.Routes
 import com.hackaton.sustaina.ui.theme.LeafyGreen
+import com.hackaton.sustaina.ui.theme.SustainaTheme
 
 @Preview(showBackground = true)
 @Composable
