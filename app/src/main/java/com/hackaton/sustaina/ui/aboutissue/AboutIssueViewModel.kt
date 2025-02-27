@@ -17,7 +17,6 @@ class AboutIssueViewModel @Inject constructor (
 
     val campaignId: String = savedStateHandle.get<String>("campaignId") ?: ""
 
-    // TODO: get campaign id (somehow)
     private val _uiState = MutableStateFlow(repository.getCampaignDetails(campaignId))
     val uiState = _uiState.asStateFlow()
 }

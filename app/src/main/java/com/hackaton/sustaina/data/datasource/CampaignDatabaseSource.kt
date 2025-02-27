@@ -1,14 +1,14 @@
 package com.hackaton.sustaina.data.datasource
 
-import com.hackaton.sustaina.ui.aboutissue.CampaignState
+import com.hackaton.sustaina.domain.models.Campaign
 import java.time.LocalDateTime
 
 class CampaignDatabaseSource {
-    fun getCampaignById(campaignId: String): CampaignState {
+    fun getCampaignById(campaignId: String): Campaign {
         // TODO: get details from Firebase
         when (campaignId) {
             "UP12345" -> {
-                return CampaignState(
+                return Campaign(
                     campaignId = "UP12345",
                     campaignName = "Komsai Week Hackathon Presentation",
                     campaignOrganizer = "UP Computer Science Guild",
@@ -19,7 +19,7 @@ class CampaignDatabaseSource {
                 )
             }
             "MDTM12345" -> {
-                return CampaignState(
+                return Campaign(
                     campaignId = "MDTM12345",
                     campaignName = "Midterm Examinations",
                     campaignOrganizer = "CIT-U",
@@ -30,7 +30,7 @@ class CampaignDatabaseSource {
                 )
             }
             else -> {
-                return CampaignState()
+                return Campaign()
             }
         }
     }

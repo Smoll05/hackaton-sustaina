@@ -1,6 +1,6 @@
 package com.hackaton.sustaina.ui.landing
 
-import com.hackaton.sustaina.ui.aboutissue.CampaignState
+import com.hackaton.sustaina.domain.models.Campaign
 
 data class LandingPageState (
     // TODO: user-related data should be retrieved from repo but is yet to be defined
@@ -9,5 +9,5 @@ data class LandingPageState (
     val expToNextLvl: Int = 1000,
     val progress: Float = (exp.toFloat() / expToNextLvl),
 
-    val upcomingCampaigns: List<CampaignState> = listOf()
+    val upcomingCampaigns: List<Campaign> = listOf()
     )
