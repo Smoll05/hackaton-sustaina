@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
+    implementation(libs.androidx.camera.core)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -67,6 +68,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //Navigation Bar
+    implementation("androidx.navigation:navigation-compose:2.5.3") // check for the latest version
+    implementation("androidx.compose.material:material-icons-extended:1.5.0")
 
     // Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:33.9.0"))

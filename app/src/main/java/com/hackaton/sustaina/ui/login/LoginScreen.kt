@@ -168,7 +168,7 @@ fun LoginPage(navController: NavController, modifier: Modifier = Modifier) {
             Spacer(Modifier.height(20.dp))
 
             Button(
-                onClick = {},
+                onClick = {navController.navigate(Routes.Landing.route)},
                 modifier = Modifier.fillMaxWidth().height(50.dp),
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(
