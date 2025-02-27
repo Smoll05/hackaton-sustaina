@@ -1,5 +1,6 @@
 package com.hackaton.sustaina.ui.landing
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -29,18 +30,21 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hackaton.sustaina.R
-import com.hackaton.sustaina.ui.navigation.Routes
+import com.hackaton.sustaina.ui.theme.DarkGreen
+import com.hackaton.sustaina.ui.theme.LeafyGreen
+import com.hackaton.sustaina.ui.theme.NeonGreen
 import com.hackaton.sustaina.ui.theme.SustainaTheme
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun LandingPage(navController: NavController, upcomingCampaigns: List<String>, viewModel: LandingPageViewModel = hiltViewModel()) {
+fun LandingPageScreen(navController: NavController, upcomingCampaigns: List<String>, viewModel: LandingPageViewModel = hiltViewModel()) {
     LaunchedEffect(upcomingCampaigns) {
         upcomingCampaigns.let { viewModel.loadUpcomingCampaigns(it) }
     }
 
     val uiState by viewModel.uiState.collectAsState()
+    Log.d("LandingPageScreen", "Progress Value: ${uiState.progress}")
 
     Column(modifier = Modifier
         .padding(all = 24.dp)
@@ -77,6 +81,8 @@ fun LandingPage(navController: NavController, upcomingCampaigns: List<String>, v
 
                     LinearProgressIndicator(
                         progress = { uiState.progress },
+                        color = LeafyGreen,
+                        trackColor = NeonGreen,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp, vertical = 8.dp)
@@ -163,6 +169,6 @@ fun UpcomingCampaign(campaignId: String, name: String, date: LocalDateTime, navC
 fun LandingPagePreview() {
     val events: List<String> = listOf("UP12345", "MDTM12345")
     SustainaTheme {
-        LandingPage(navController = rememberNavController(), upcomingCampaigns = emptyList())
+        LandingPageScreen(navController = rememberNavController(), upcomingCampaigns = emptyList())
     }
 }

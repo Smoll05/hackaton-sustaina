@@ -12,7 +12,7 @@ import com.hackaton.sustaina.LoginPage
 import com.hackaton.sustaina.RegisterPage
 import com.hackaton.sustaina.ui.aboutissue.AboutIssue
 import com.hackaton.sustaina.ui.camera.CameraScreen
-import com.hackaton.sustaina.ui.landing.LandingPage
+import com.hackaton.sustaina.ui.landing.LandingPageScreen
 
 sealed class Routes(val route: String) {
     data object Login :  Routes("Login")
@@ -36,12 +36,12 @@ fun Navigation() {
         composable(Routes.Camera.route) {
             CameraScreen(navController = navController)
         }
-        composable(Routes.AboutIssue.route) {
+
         // TODO: pass upcoming campaigns here (IDs)
         composable(Routes.Landing.route) {
             var events: List<String> = listOf("UP12345", "MDTM12345")
 //            events = emptyList()
-            LandingPage(navController = navController, upcomingCampaigns = events)
+            LandingPageScreen(navController = navController, upcomingCampaigns = events)
         }
         composable(
             route = Routes.AboutIssue.route,

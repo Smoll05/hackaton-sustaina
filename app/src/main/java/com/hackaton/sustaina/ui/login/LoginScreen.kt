@@ -167,18 +167,6 @@ fun LoginPage(navController: NavController, modifier: Modifier = Modifier) {
 
             Spacer(Modifier.height(20.dp))
 
-            Button(
-                onClick = {},
-                modifier = Modifier.fillMaxWidth().height(50.dp),
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-            ) {
-                Text(text = "Login")
-            }
         Button(
             onClick = {navController.navigate(Routes.Landing.route)},
             modifier = Modifier.fillMaxWidth().height(50.dp),
