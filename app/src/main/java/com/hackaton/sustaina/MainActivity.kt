@@ -20,20 +20,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        configureFirebaseServices()
-
         setContent {
             SustainaTheme {
                 Navigation()
             }
-        }
-    }
-
-    private fun configureFirebaseServices() {
-        if (BuildConfig.DEBUG) {
-            Log.d("DEBUG CHECK", "App is running in debug mode")
-            FirebaseAuth.getInstance().useEmulator(LOCAL_HOST, AUTH_PORT)
-            FirebaseDatabase.getInstance().useEmulator(LOCAL_HOST, DATABASE_PORT)
         }
     }
 }

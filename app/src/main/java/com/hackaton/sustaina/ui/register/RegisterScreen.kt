@@ -17,6 +17,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,13 +34,21 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.hackaton.sustaina.ui.login.LoginState
+import com.hackaton.sustaina.ui.login.RegisterViewModel
 import com.hackaton.sustaina.ui.navigation.Routes
+import com.hackaton.sustaina.ui.register.RegisterState
 import com.hackaton.sustaina.ui.theme.LeafyGreen
 import com.hackaton.sustaina.ui.theme.SustainaTheme
 
 @Composable
-fun RegisterPage(navController: NavController, modifier: Modifier = Modifier) {
+fun RegisterPage(
+    navController: NavController,
+    modifier: Modifier = Modifier,
+    registerViewModel: RegisterViewModel = hiltViewModel()
+) {
 
     var email by remember {
         mutableStateOf("")
@@ -50,6 +60,14 @@ fun RegisterPage(navController: NavController, modifier: Modifier = Modifier) {
 
     var confirmPassword by remember {
         mutableStateOf("")
+    }
+
+    val registerState by registerViewModel.registerState.collectAsState()
+
+    LaunchedEffect(registerState) {
+        if (registerState is RegisterState.Success) {
+            navController.navigate(Routes.Landing.route)
+        }
     }
 
     Box(modifier = Modifier.padding(30.dp, 50.dp).fillMaxWidth()) {
@@ -126,7 +144,9 @@ fun RegisterPage(navController: NavController, modifier: Modifier = Modifier) {
         Spacer(Modifier.height(20.dp))
 
         Button(
-            onClick = {},
+            onClick = {
+                if(confirmPassword == password) registerViewModel.register(email, password)
+            },
             modifier = Modifier.fillMaxWidth().height(50.dp),
             shape = RoundedCornerShape(5.dp)
         ) {

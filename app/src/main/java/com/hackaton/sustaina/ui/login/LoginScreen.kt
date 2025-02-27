@@ -35,11 +35,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.hackaton.sustaina.ui.login.LoginViewModel
 import com.hackaton.sustaina.ui.navigation.Routes
 import com.hackaton.sustaina.ui.theme.LeafyGreen
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.hackaton.sustaina.ui.login.LoginState
 
 @Composable
-fun LoginPage(navController: NavController, modifier: Modifier = Modifier) {
+fun LoginPage(navController: NavController,
+              modifier: Modifier = Modifier,
+              loginViewModel: LoginViewModel = hiltViewModel()) {
 
     var email by remember {
         mutableStateOf("")
@@ -47,6 +52,14 @@ fun LoginPage(navController: NavController, modifier: Modifier = Modifier) {
 
     var password by remember {
         mutableStateOf("")
+    }
+
+    val loginState by loginViewModel.loginState.collectAsState()
+
+    LaunchedEffect(loginState) {
+        if (loginState is LoginState.Success) {
+            navController.navigate(Routes.Landing.route)
+        }
     }
 
     Column(
@@ -101,7 +114,7 @@ fun LoginPage(navController: NavController, modifier: Modifier = Modifier) {
         Spacer(Modifier.height(20.dp))
 
         Button(
-            onClick = {navController.navigate(Routes.Landing.route)},
+            onClick = {loginViewModel.login(email, password)},
             modifier = Modifier.fillMaxWidth().height(50.dp),
             shape = RoundedCornerShape(5.dp)
         ) {
