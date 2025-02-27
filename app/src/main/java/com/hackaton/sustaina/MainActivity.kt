@@ -12,7 +12,9 @@ import com.hackaton.sustaina.data.DATABASE_PORT
 import com.hackaton.sustaina.data.LOCAL_HOST
 import com.hackaton.sustaina.ui.navigation.Navigation
 import com.hackaton.sustaina.ui.theme.SustainaTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

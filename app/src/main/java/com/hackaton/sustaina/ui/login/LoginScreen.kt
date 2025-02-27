@@ -1,6 +1,9 @@
-package com.hackaton.sustaina.ui.login
+package com.hackaton.sustaina
 
+import android.content.Intent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
@@ -22,14 +26,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.hackaton.sustaina.R
+import androidx.navigation.compose.rememberNavController
 import com.hackaton.sustaina.ui.navigation.Routes
+import com.hackaton.sustaina.ui.theme.LeafyGreen
 
 @Composable
 fun LoginPage(navController: NavController, modifier: Modifier = Modifier) {
@@ -54,17 +61,17 @@ fun LoginPage(navController: NavController, modifier: Modifier = Modifier) {
             modifier = Modifier.size(150.dp)
         )
 
-        Text(
-            text = "Sustaina",
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold
-        )
+//        Text(
+//            text = "Sustaina",
+//            fontSize = 32.sp,
+//            fontWeight = FontWeight.Bold
+//        )
 
-        Spacer(Modifier.height(4.dp))
+//        Spacer(Modifier.height(4.dp))
 
         Text(
             text = "Welcome back!",
-            fontSize = 24.sp,
+            fontSize = 32.sp,
             fontWeight = FontWeight.SemiBold
         )
 
@@ -94,7 +101,7 @@ fun LoginPage(navController: NavController, modifier: Modifier = Modifier) {
         Spacer(Modifier.height(20.dp))
 
         Button(
-            onClick = { navController.navigate(Routes.SignOut.route)},
+            onClick = {navController.navigate(Routes.Landing.route)},
             modifier = Modifier.fillMaxWidth().height(50.dp),
             shape = RoundedCornerShape(5.dp)
         ) {
@@ -107,7 +114,17 @@ fun LoginPage(navController: NavController, modifier: Modifier = Modifier) {
 
         Spacer(Modifier.height(32.dp))
 
-        Text(text = "Or sign in with")
+        Row {
+            Text(
+                text = "                    ",
+                textDecoration = TextDecoration.LineThrough
+            )
+            Text(text = "  Or sign in with  ")
+            Text(
+                text = "                    ",
+                textDecoration = TextDecoration.LineThrough
+            )
+        }
 
         Spacer(Modifier.height(32.dp))
 
@@ -141,10 +158,11 @@ fun LoginPage(navController: NavController, modifier: Modifier = Modifier) {
             Text("Don't have an account? ")
             Text(
                 "Register",
-                color = Color.Green,
+                color = LeafyGreen,
                 modifier = Modifier.clickable {
                     navController.navigate(Routes.Register.route)
-                }
+                },
+                textDecoration = TextDecoration.Underline
             )
         }
     }

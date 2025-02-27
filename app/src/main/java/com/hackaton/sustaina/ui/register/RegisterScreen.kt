@@ -1,4 +1,4 @@
-package com.hackaton.sustaina.ui.register
+package com.hackaton.sustaina
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -23,16 +23,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.hackaton.sustaina.R
 import com.hackaton.sustaina.ui.navigation.Routes
+import com.hackaton.sustaina.ui.theme.LeafyGreen
+import com.hackaton.sustaina.ui.theme.SustainaTheme
 
 @Composable
 fun RegisterPage(navController: NavController, modifier: Modifier = Modifier) {
@@ -45,7 +48,11 @@ fun RegisterPage(navController: NavController, modifier: Modifier = Modifier) {
         mutableStateOf("")
     }
 
-    Box(modifier = Modifier.padding(40.dp).fillMaxWidth()) {
+    var confirmPassword by remember {
+        mutableStateOf("")
+    }
+
+    Box(modifier = Modifier.padding(30.dp, 50.dp).fillMaxWidth()) {
         Image(
             painter = painterResource(R.drawable.icon_back),
             contentDescription = "Back Button",
@@ -66,18 +73,19 @@ fun RegisterPage(navController: NavController, modifier: Modifier = Modifier) {
             modifier = Modifier.size(150.dp)
         )
 
-        Text(
-            text = "Sustaina",
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold
-        )
+//        Text(
+//            text = "Sustaina",
+//            fontSize = 32.sp,
+//            fontWeight = FontWeight.Bold
+//        )
 
-        Spacer(Modifier.height(4.dp))
+//        Spacer(Modifier.height(4.dp))
 
         Text(
-            text = "Join Sustaina!",
+            text = "Become part of a community striving for a sustainable future!",
             fontSize = 24.sp,
-            fontWeight = FontWeight.SemiBold
+            fontWeight = FontWeight.SemiBold,
+            textAlign = TextAlign.Center
         )
 
         Spacer(Modifier.height(16.dp))
@@ -103,6 +111,18 @@ fun RegisterPage(navController: NavController, modifier: Modifier = Modifier) {
             visualTransformation = PasswordVisualTransformation()
         )
 
+        Spacer(Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = confirmPassword,
+            onValueChange = {
+                confirmPassword = it
+            },
+            label = { Text("Confirm Password") },
+            modifier = Modifier.fillMaxWidth(),
+            visualTransformation = PasswordVisualTransformation()
+        )
+
         Spacer(Modifier.height(20.dp))
 
         Button(
@@ -117,7 +137,11 @@ fun RegisterPage(navController: NavController, modifier: Modifier = Modifier) {
 
         Row {
             Text(text = "Already have an account? ");
-            Text(text = "Sign in here.", color = Color.Green, modifier = Modifier.clickable {
+            Text(
+                text = "Sign in here",
+                color = LeafyGreen,
+                textDecoration = TextDecoration.Underline,
+                modifier = Modifier.clickable {
                 navController.navigate(Routes.Login.route)
             })
         }
