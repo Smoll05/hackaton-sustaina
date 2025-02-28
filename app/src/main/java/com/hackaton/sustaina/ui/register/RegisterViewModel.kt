@@ -3,7 +3,7 @@ package com.hackaton.sustaina.ui.login
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hackaton.sustaina.data.repository.AuthRepository
+import com.hackaton.sustaina.data.auth.AuthRepository
 import com.hackaton.sustaina.ui.register.RegisterState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
