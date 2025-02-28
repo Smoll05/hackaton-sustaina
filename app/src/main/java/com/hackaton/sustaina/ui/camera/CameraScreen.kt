@@ -2,12 +2,14 @@ package com.hackaton.sustaina.ui.camera
 
 import android.content.ContentValues
 import android.content.Context
+import android.os.Build
 import android.os.Environment
 import android.provider.ContactsContract.Directory
 import android.provider.MediaStore
 import android.util.Log
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
+import androidx.annotation.RequiresApi
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -51,22 +53,20 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.hackaton.sustaina.R
 import kotlinx.coroutines.launch
 import java.io.File
+import java.time.ZonedDateTime
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 lateinit var cameraExecutor: Executor
+@RequiresApi(Build.VERSION_CODES.Q)
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun VerifyCameraPermissions(navController: NavController) {
     val cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA)
     val cameraHasPermission = cameraPermissionState.status.isGranted
     val cameraOnRequestPermission = cameraPermissionState::launchPermissionRequest
-
-//    val writePermissionState = rememberPermissionState(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//    val writeHasPermission = writePermissionState.status.isGranted
-//    val writeOnRequestPermission = writePermissionState::launchPermissionRequest
 
     if (cameraHasPermission) {
         CameraScreen(navController)
@@ -91,6 +91,7 @@ fun NoPermissionScreen(navController: NavController,
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun CameraScreen(
     navController: NavController
@@ -193,16 +194,22 @@ suspend fun Context.cameraProvider() : ProcessCameraProvider = suspendCoroutine 
     }, ContextCompat.getMainExecutor(this))
 }
 
+@RequiresApi(Build.VERSION_CODES.Q)
 private fun capturePhoto(imageCapture: ImageCapture, context: Context) {
     cameraExecutor = Executors.newSingleThreadExecutor()
     val currentTime = System.currentTimeMillis()
     val name = "IMG_$currentTime.jpg"
+    val currentTimeSeconds = (currentTime / 1000).toInt()
+
     val contentValues = ContentValues().apply {
         put(MediaStore.MediaColumns.DISPLAY_NAME, name)
         put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-        put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+        put(MediaStore.MediaColumns.DATE_TAKEN, currentTimeSeconds)
+        put(MediaStore.MediaColumns.RELATIVE_PATH, "Pictures/Sustaina")
     }
-    val uri = context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)!!
+
+    val uri = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)!!
+
     val outputFileOption = ImageCapture.OutputFileOptions.Builder(
         context.contentResolver, uri, contentValues
     ).build()
@@ -210,11 +217,11 @@ private fun capturePhoto(imageCapture: ImageCapture, context: Context) {
     imageCapture.takePicture(outputFileOption, cameraExecutor, object : ImageCapture.OnImageSavedCallback {
         override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
             Log.e("Camera", "The saved uri is ${outputFileResults.savedUri}")
+
         }
 
         override fun onError(exception: ImageCaptureException) {
-            Log.e("Camera", exception.toString())
+            Log.e("Camera", "$exception: ${exception.cause}")
         }
-
     })
 }
