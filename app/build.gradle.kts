@@ -104,6 +104,14 @@ dependencies {
     implementation("androidx.camera:camera-view:1.4.1")
     implementation("androidx.camera:camera-extensions:1.4.1")
     implementation("com.google.accompanist:accompanist-permissions:0.37.2")
+
+    // Google Maps SDK
+    implementation("com.google.maps.android:maps-compose:6.4.1")
+    implementation("com.google.maps.android:maps-ktx:5.1.1")
+
+    // Permissions Helper for Jetpack Compose
+    implementation("com.google.accompanist:accompanist-permissions:0.32.0")
+
 }
 
 kapt {
