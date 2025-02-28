@@ -33,15 +33,15 @@ fun BottomNavigationBar(navController: NavController) {
     val items = listOf(
         Routes.Landing to R.drawable.icon_landing,
         Routes.Camera to R.drawable.icon_camera,
-        Routes.AboutIssue to R.drawable.icon_map
+        Routes.Map to R.drawable.icon_map
     )
 
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .height(70.dp)
-            .padding(horizontal = 35.dp),
-        shape = RoundedCornerShape(topStart = 35.dp, topEnd = 35.dp),
+            .height(110.dp)
+            .padding(horizontal = 25.dp, vertical = 15.dp),
+        shape = RoundedCornerShape(35.dp),
         tonalElevation = 3.dp,
         color = MaterialTheme.colorScheme.primary
     ) {
