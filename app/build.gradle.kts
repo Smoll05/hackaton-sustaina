@@ -113,6 +113,9 @@ dependencies {
     // Permissions Helper for Jetpack Compose
     implementation("com.google.accompanist:accompanist-permissions:0.32.0")
 
+    // Fused Location API; obtain current location of user
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
 }
 
 kapt {
