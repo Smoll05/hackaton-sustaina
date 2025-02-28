@@ -117,6 +117,13 @@ fun AboutIssue(navController: NavController, viewModel: AboutIssueViewModel = hi
                                 .align(Alignment.CenterVertically)
                         )
                     }
+//                    Text(
+//                        text = uiState.campaignStartDate,
+//                        fontSize = 18.sp,
+//                        modifier = Modifier
+//                            .padding(start = 8.dp)
+//                            .align(Alignment.CenterVertically)
+//                    )
                 }
             }
 

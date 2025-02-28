@@ -7,7 +7,7 @@ import javax.inject.Inject
 class HotspotDataSource @Inject constructor(
     database: DatabaseReference
 ) {
-    private val hotspotRef = database.child("hotspot")
+    private val hotspotRef = database.child("hotspots")
 
     fun addHotspot(hotspot: Hotspot, onComplete: (Boolean, String?) -> Unit) {
         hotspotRef.child(hotspot.hotspotId).setValue(hotspot)

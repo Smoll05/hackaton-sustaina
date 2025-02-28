@@ -8,7 +8,7 @@ import javax.inject.Inject
 class UserDataSource @Inject constructor(
     database: DatabaseReference
 ){
-    private val usersRef = database.child("user")
+    private val usersRef = database.child("users")
 
     fun addUser(user: User, onComplete: (Boolean, String?) -> Unit) {
         usersRef.child(user.userId).setValue(user)

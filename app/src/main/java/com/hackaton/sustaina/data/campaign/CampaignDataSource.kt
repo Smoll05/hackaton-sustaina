@@ -9,7 +9,7 @@ class CampaignDataSource @Inject constructor(
     database: DatabaseReference
 ){
     private val TAG = "CampaignDataSource"
-    private val campaignRef = database.child("campaign")
+    private val campaignRef = database.child("campaigns")
 
     fun addCampaign(campaign: Campaign, onComplete: (Boolean, String?) -> Unit) {
         campaignRef.child(campaign.campaignId).setValue(campaign)
