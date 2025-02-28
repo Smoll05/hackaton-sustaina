@@ -7,6 +7,9 @@ plugins {
     // Dependency Injection With Hilt
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+
+    // Google Maps SDK
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
