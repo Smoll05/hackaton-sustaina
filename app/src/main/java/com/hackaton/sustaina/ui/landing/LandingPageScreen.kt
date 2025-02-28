@@ -21,21 +21,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.hackaton.sustaina.R
 import com.hackaton.sustaina.ui.theme.LeafyGreen
 import com.hackaton.sustaina.ui.theme.NeonGreen
-import com.hackaton.sustaina.ui.theme.SustainaTheme
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun LandingPageScreen(navController: NavController, upcomingCampaigns: List<String>, viewModel: LandingPageViewModel = hiltViewModel()) {
+fun LandingPageScreen(navController: NavController, viewModel: LandingPageViewModel = hiltViewModel()) {
 
     val uiState by viewModel.uiState.collectAsState()
 
@@ -101,7 +98,7 @@ fun LandingPageScreen(navController: NavController, upcomingCampaigns: List<Stri
                 modifier = Modifier.padding(top = 20.dp, start = 16.dp)
             )
 
-            if (upcomingCampaigns.isEmpty()) {
+            if (uiState?.upcomingCampaigns?.isEmpty() == true) {
                 Text(
                     text = "No Upcoming Campaigns!",
                     fontSize = 18.sp,
@@ -146,24 +143,5 @@ fun UpcomingCampaign(campaignId: String, name: String, date: LocalDateTime, navC
                 fontSize = 14.sp
             )
         }
-    }
-}
-
-
-//@Preview(showBackground = true)
-//@Composable
-//fun UpcomingCampaignPreview() {
-//    SustainaTheme {
-//        val date = LocalDateTime.of(2025, 3, 5, 13, 0)
-//        UpcomingCampaign("UP Hackathon Presentation", date)
-//    }
-//}
-
-@Preview(showBackground = true)
-@Composable
-fun LandingPagePreview() {
-    val events: List<String> = listOf("UP12345", "MDTM12345")
-    SustainaTheme {
-        LandingPageScreen(navController = rememberNavController(), upcomingCampaigns = emptyList())
     }
 }

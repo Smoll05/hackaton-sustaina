@@ -1,8 +1,6 @@
 package com.hackaton.sustaina.ui.navigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -36,12 +34,8 @@ fun Navigation() {
         composable(Routes.Camera.route) {
             CameraScreen(navController = navController)
         }
-
-        // TODO: pass upcoming campaigns here (IDs)
         composable(Routes.Landing.route) {
-            var events: List<String> = listOf("UP12345", "MDTM12345")
-//            events = emptyList()
-            LandingPageScreen(navController = navController, upcomingCampaigns = events)
+            LandingPageScreen(navController = navController)
         }
         composable(
             route = Routes.AboutIssue.route,
