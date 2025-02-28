@@ -1,6 +1,9 @@
 package com.hackaton.sustaina.ui.navigation
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -17,7 +20,6 @@ import com.hackaton.sustaina.LoginPage
 import com.hackaton.sustaina.RegisterPage
 import com.hackaton.sustaina.ui.aboutissue.AboutIssue
 import com.hackaton.sustaina.ui.camera.CameraScreen
-import com.hackaton.sustaina.ui.landing.LandingPage
 import com.hackaton.sustaina.ui.landing.LandingPageScreen
 import com.hackaton.sustaina.ui.map.MapScreen
 import com.hackaton.sustaina.ui.profile.ProfileScreen
@@ -33,6 +35,7 @@ sealed class Routes(val route: String) {
     data object Profile : Routes("Profile")
 }
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
  fun Navigation() {
@@ -60,6 +63,9 @@ sealed class Routes(val route: String) {
                 composable(Routes.Landing.route) {
                     var events: List<String> = listOf("UP12345", "MDTM12345")
 //            events = emptyList()
+
+                    BackHandler { /* do nothing */ }
+
                     LandingPageScreen(navController = navController, upcomingCampaigns = events)
                 }
                 composable(Routes.Camera.route) {
