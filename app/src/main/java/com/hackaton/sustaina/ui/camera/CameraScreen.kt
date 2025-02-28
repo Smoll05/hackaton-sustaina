@@ -3,8 +3,6 @@ package com.hackaton.sustaina.ui.camera
 import android.content.ContentValues
 import android.content.Context
 import android.os.Build
-import android.os.Environment
-import android.provider.ContactsContract.Directory
 import android.provider.MediaStore
 import android.util.Log
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -15,7 +13,6 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -52,8 +49,6 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.hackaton.sustaina.R
 import kotlinx.coroutines.launch
-import java.io.File
-import java.time.ZonedDateTime
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import kotlin.coroutines.resume
@@ -217,7 +212,6 @@ private fun capturePhoto(imageCapture: ImageCapture, context: Context) {
     imageCapture.takePicture(outputFileOption, cameraExecutor, object : ImageCapture.OnImageSavedCallback {
         override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
             Log.e("Camera", "The saved uri is ${outputFileResults.savedUri}")
-
         }
 
         override fun onError(exception: ImageCaptureException) {
