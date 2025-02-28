@@ -10,7 +10,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
-import com.example.maptest.SustainaMap
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -71,7 +70,6 @@ fun MapScreen(navController: NavController) {
     ) {
         MapEffect(Unit) { map ->
             googleMap.value = map
-
         }
         googleMap.value?.let { mapInstance ->
             val capabilities: MapCapabilities = mapInstance.mapCapabilities
@@ -84,12 +82,9 @@ fun MapScreen(navController: NavController) {
                     R.raw.map_style
                 )
             )
-
             val sustainaMap = remember { SustainaMap(mapInstance) }
-
             sustainaMap.addHotspotZones(reports)
             sustainaMap.addCampaignPins(events)
         }
-
     }
 }
