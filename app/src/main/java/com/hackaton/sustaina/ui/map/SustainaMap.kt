@@ -1,4 +1,4 @@
-package com.example.maptest
+package com.hackaton.sustaina.ui.map
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -9,14 +9,11 @@ import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.PinConfig
-import com.hackaton.sustaina.ui.map.SustainaCampaign
-import com.hackaton.sustaina.ui.map.UserReport
 
 class SustainaMap(private val mMap: GoogleMap) {
 
     private val circleZoneReportMap = mutableMapOf<Circle, UserReport>()
     private val campaignMarkerMap = mutableMapOf<Marker?, SustainaCampaign>()
-
 
     private fun goToLocation(latLng: LatLng) {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
@@ -61,8 +58,6 @@ class SustainaMap(private val mMap: GoogleMap) {
             val circle = mMap.addCircle(circleOption)
             circleZoneReportMap[circle] = report
         }
-
-
         // TODO( Handle click event when a circle is clicked )
         mMap.setOnCircleClickListener { clickedCircle ->
             val userReport = circleZoneReportMap[clickedCircle]
@@ -91,7 +86,6 @@ class SustainaMap(private val mMap: GoogleMap) {
             val marker = mMap.addMarker(markerOptions)
             campaignMarkerMap[marker] = event
         }
-
         // TODO( Handle click event when a pin is clicked )
         mMap.setOnMarkerClickListener { clickedMarker ->
             val campaign = campaignMarkerMap[clickedMarker]
