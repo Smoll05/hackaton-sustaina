@@ -4,6 +4,7 @@ import java.time.LocalDateTime
 
 data class Campaign(
     val campaignId: String = "",
+    val campaignAttendingUser: List<String> = listOf(),
     val campaignName: String = "",
     val campaignOrganizer: String = "",
     val campaignStartDate: LocalDateTime? = null,

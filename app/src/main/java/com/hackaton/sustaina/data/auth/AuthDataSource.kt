@@ -1,11 +1,11 @@
-package com.hackaton.sustaina.data.datasource
+package com.hackaton.sustaina.data.auth
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class FirebaseAuthSource @Inject constructor(
+class AuthDataSource @Inject constructor(
     private val auth : FirebaseAuth
 ){
     fun getCurrentUser() : FirebaseUser? {

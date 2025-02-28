@@ -7,4 +7,4 @@ data class LandingPageState (
     val user: User,
     val progress: Float = 0f,
     val upcomingCampaigns: List<Campaign> = listOf()
-    )
+)
