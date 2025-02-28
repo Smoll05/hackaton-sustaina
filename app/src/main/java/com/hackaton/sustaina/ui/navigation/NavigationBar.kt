@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -50,7 +51,11 @@ fun BottomNavigationBar(navController: NavController) {
 
     AnimatedVisibility(
         visible = isVisible,
-        enter = fadeIn(animationSpec = tween(durationMillis = 500))
+        enter = fadeIn(animationSpec = tween(durationMillis = 500)) +
+                slideInVertically(
+                    initialOffsetY = { it },
+                    animationSpec = tween(durationMillis = 500)
+                )
     ) {
         Surface(
             modifier = Modifier
