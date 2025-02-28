@@ -1,21 +1,28 @@
 package com.hackaton.sustaina
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import com.hackaton.sustaina.ui.navigation.Navigation
 import com.hackaton.sustaina.ui.theme.SustainaTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        WindowCompat.setDecorFitsSystemWindows(window, true)
+
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.off_grey)
 
         setContent {
-            SustainaTheme(darkTheme = false) { // to simulate dark/light mode, default to white to focus on core features
+            SustainaTheme(darkTheme = false) {
                 Navigation()
             }
         }
