@@ -1,7 +1,6 @@
 package com.hackaton.sustaina.ui.landing
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.hackaton.sustaina.data.repository.AuthRepository
 import com.hackaton.sustaina.data.repository.CampaignRepository
 import com.hackaton.sustaina.data.repository.UserRepository
@@ -9,7 +8,6 @@ import com.hackaton.sustaina.domain.models.Campaign
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel

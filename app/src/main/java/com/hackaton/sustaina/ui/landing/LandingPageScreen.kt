@@ -1,7 +1,5 @@
 package com.hackaton.sustaina.ui.landing
 
-import android.util.Log
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -17,12 +15,10 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,7 +28,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hackaton.sustaina.R
-import com.hackaton.sustaina.ui.navigation.Routes
 import com.hackaton.sustaina.ui.theme.LeafyGreen
 import com.hackaton.sustaina.ui.theme.NeonGreen
 import com.hackaton.sustaina.ui.theme.SustainaTheme
@@ -87,7 +82,7 @@ fun LandingPageScreen(navController: NavController, upcomingCampaigns: List<Stri
                     )
 
                     Text(
-                        text = "${uiState?.user?.userExp} / 1000} EXP",
+                        text = "${uiState?.user?.userExp} / 1000 EXP",
                         fontSize = 16.sp,
                         modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
                     )
