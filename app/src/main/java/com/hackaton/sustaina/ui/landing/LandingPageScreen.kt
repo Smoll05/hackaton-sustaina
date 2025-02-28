@@ -1,13 +1,8 @@
 package com.hackaton.sustaina.ui.landing
 
-import android.util.Log
-import android.widget.Space
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.displayCutoutPadding
@@ -17,9 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedCard
@@ -33,7 +26,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -43,7 +35,6 @@ import androidx.navigation.NavController
 import com.hackaton.sustaina.R
 import com.hackaton.sustaina.domain.models.toLocalDateTime
 import com.hackaton.sustaina.ui.navigation.Routes
-import com.hackaton.sustaina.ui.theme.DarkGreen
 import com.hackaton.sustaina.ui.theme.LeafyGreen
 import com.hackaton.sustaina.ui.theme.NeonGreen
 import java.time.LocalDateTime
@@ -172,8 +163,7 @@ fun UpcomingCampaign(campaignId: String, name: String, date: LocalDateTime, navC
     ElevatedCard(modifier = Modifier
         .fillMaxWidth()
         .clickable {
-//            navController.navigate("AboutIssue/${campaignId}")
-            navController.navigate(Routes.AboutIssue.route)
+            navController.navigate("AboutIssue/${campaignId}")
         }
         .padding(vertical = 8.dp)){
         Column(modifier = Modifier.padding(22.dp)) {
