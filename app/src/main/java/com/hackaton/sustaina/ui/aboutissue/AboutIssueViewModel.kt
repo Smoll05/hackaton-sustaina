@@ -3,6 +3,7 @@ package com.hackaton.sustaina.ui.aboutissue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.hackaton.sustaina.data.repository.CampaignRepository
+import com.hackaton.sustaina.domain.models.Campaign
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,13 +12,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AboutIssueViewModel @Inject constructor (
-    private val repository: CampaignRepository,
+    repository: CampaignRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    val campaignId: String = savedStateHandle.get<String>("campaignId") ?: ""
+    private val campaignId: String = savedStateHandle.get<String>("campaignId") ?: ""
 
-    // TODO: get campaign id (somehow)
-    private val _uiState = MutableStateFlow(repository.getCampaignDetails(campaignId))
+    private val _uiState = MutableStateFlow(AboutIssueState())
     val uiState = _uiState.asStateFlow()
+
+    init {
+        _uiState.value = AboutIssueState(repository.getCampaignDetails(campaignId))
+    }
 }

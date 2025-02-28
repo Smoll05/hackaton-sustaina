@@ -15,30 +15,24 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.hackaton.sustaina.R
-import com.hackaton.sustaina.ui.navigation.Routes
-import com.hackaton.sustaina.ui.theme.SustainaTheme
+import com.hackaton.sustaina.ui.theme.LeafyGreen
+import com.hackaton.sustaina.ui.theme.NeonGreen
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun LandingPage(navController: NavController, upcomingCampaigns: List<String>, viewModel: LandingPageViewModel = hiltViewModel()) {
-    LaunchedEffect(upcomingCampaigns) {
-        upcomingCampaigns.let { viewModel.loadUpcomingCampaigns(it) }
-    }
+fun LandingPageScreen(navController: NavController, viewModel: LandingPageViewModel = hiltViewModel()) {
 
     val uiState by viewModel.uiState.collectAsState()
 
@@ -69,21 +63,23 @@ fun LandingPage(navController: NavController, upcomingCampaigns: List<String>, v
 
                 Column {
                     Text(
-                        text = "Level " + uiState.level,
+                        text = "Level " + (uiState?.user?.userLevel ?: 0),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(top = 16.dp, start = 16.dp)
                     )
 
                     LinearProgressIndicator(
-                        progress = { uiState.progress },
+                        progress = { uiState?.progress ?: 0f},
+                        color = LeafyGreen,
+                        trackColor = NeonGreen,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp, vertical = 8.dp)
                     )
 
                     Text(
-                        text = "${uiState.exp} / ${uiState.expToNextLvl} EXP",
+                        text = "${uiState?.user?.userExp} / 1000 EXP",
                         fontSize = 16.sp,
                         modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
                     )
@@ -102,7 +98,7 @@ fun LandingPage(navController: NavController, upcomingCampaigns: List<String>, v
                 modifier = Modifier.padding(top = 20.dp, start = 16.dp)
             )
 
-            if (upcomingCampaigns.isEmpty()) {
+            if (uiState?.upcomingCampaigns?.isEmpty() == true) {
                 Text(
                     text = "No Upcoming Campaigns!",
                     fontSize = 18.sp,
@@ -114,8 +110,10 @@ fun LandingPage(navController: NavController, upcomingCampaigns: List<String>, v
             } else {
                 LazyColumn(modifier = Modifier
                     .padding(16.dp)) {
-                    items(uiState.upcomingCampaigns) {
-                        UpcomingCampaign(it.campaignId, it.campaignName, it.campaignStartDate!!, navController)
+                    uiState?.let {
+                        items(it.upcomingCampaigns) {
+                            UpcomingCampaign(it.campaignId, it.campaignName, it.campaignStartDate!!, navController)
+                        }
                     }
                 }
             }
@@ -145,24 +143,5 @@ fun UpcomingCampaign(campaignId: String, name: String, date: LocalDateTime, navC
                 fontSize = 14.sp
             )
         }
-    }
-}
-
-
-//@Preview(showBackground = true)
-//@Composable
-//fun UpcomingCampaignPreview() {
-//    SustainaTheme {
-//        val date = LocalDateTime.of(2025, 3, 5, 13, 0)
-//        UpcomingCampaign("UP Hackathon Presentation", date)
-//    }
-//}
-
-@Preview(showBackground = true)
-@Composable
-fun LandingPagePreview() {
-    val events: List<String> = listOf("UP12345", "MDTM12345")
-    SustainaTheme {
-        LandingPage(navController = rememberNavController(), upcomingCampaigns = emptyList())
     }
 }

@@ -1,13 +1,15 @@
 package com.hackaton.sustaina.ui.aboutissue
 
+import com.hackaton.sustaina.domain.models.Campaign
 import java.time.LocalDateTime
 
-data class CampaignState(
-    val campaignId: String = "",
-    val campaignName: String = "",
-    val campaignOrganizer: String = "",
-    val campaignStartDate: LocalDateTime? = null,
-    val campaignAbout: String = "",
-    val campaignVenue: String = "",
-    val campaignAddress: String = ""
-    )
+data class AboutIssueState(
+    val campaign: Campaign = Campaign()
+    ) {
+    val campaignName: String = campaign.campaignName
+    val campaignStartDate: LocalDateTime? = campaign.campaignStartDate
+    val campaignAddress: String = campaign.campaignAddress
+    val campaignVenue: String = campaign.campaignVenue
+    val campaignOrganizer: String = campaign.campaignOrganizer
+    val campaignAbout: String = campaign.campaignAbout
+}
