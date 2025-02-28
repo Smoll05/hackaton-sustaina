@@ -1,10 +1,7 @@
 package com.hackaton.sustaina
 
-import android.content.Intent
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,10 +13,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -29,13 +30,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,7 +44,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hackaton.sustaina.ui.login.LoginViewModel
 import com.hackaton.sustaina.ui.navigation.Routes
-import com.hackaton.sustaina.ui.theme.LeafyGreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hackaton.sustaina.ui.login.LoginState
 
@@ -116,14 +116,6 @@ fun LoginPage(navController: NavController,
                     modifier = Modifier.size(150.dp)
                 )
 
-//        Text(
-//            text = "Sustaina",
-//            fontSize = 32.sp,
-//            fontWeight = FontWeight.Bold
-//        )
-
-//        Spacer(Modifier.height(4.dp))
-
                 Text(
                     text = "Welcome back!",
                     color = MaterialTheme.colorScheme.onBackground,
@@ -159,6 +151,7 @@ fun LoginPage(navController: NavController,
 
                 Spacer(Modifier.height(15.dp))
 
+                var passwordVisible by remember { mutableStateOf(false) }
                 OutlinedTextField(
                     value = password,
                     onValueChange = { password = it },
@@ -173,14 +166,32 @@ fun LoginPage(navController: NavController,
                         .background(MaterialTheme.colorScheme.background),
                     shape = RoundedCornerShape(10.dp),
                     textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground),
+                    trailingIcon = {
+                        val image = if (passwordVisible)
+                            Icons.Default.VisibilityOff
+                        else
+                            Icons.Default.Visibility
+
+                        val description = "Password visibility"
+
+                        IconButton(
+                            onClick = { passwordVisible = !passwordVisible }
+                        ) {
+                            Icon(
+                                imageVector = image,
+                                contentDescription = description,
+                                tint = colorResource(R.color.off_grey)
+                            )
+                        }
+                    },
+                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = MaterialTheme.colorScheme.primary,
                         unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                         cursorColor = MaterialTheme.colorScheme.primary,
                         focusedLabelColor = MaterialTheme.colorScheme.primary,
                         unfocusedLabelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                    ),
-                    visualTransformation = PasswordVisualTransformation()
+                    )
                 )
 
                 Spacer(Modifier.height(20.dp))

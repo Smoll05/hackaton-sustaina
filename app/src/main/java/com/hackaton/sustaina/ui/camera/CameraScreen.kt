@@ -99,7 +99,6 @@ fun CameraScreen(navController: NavController) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    // Para sa flash animation inig capture
     var flashAlpha by remember { mutableStateOf(0f) }
     val animatedAlpha by animateFloatAsState(
         targetValue = flashAlpha,
