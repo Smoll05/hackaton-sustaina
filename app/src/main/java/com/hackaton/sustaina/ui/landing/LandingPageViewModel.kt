@@ -19,7 +19,7 @@ class LandingPageViewModel @Inject constructor(
     ) : ViewModel() {
     val user = auth.getCurrentUser()
 
-    private val _uiState: MutableStateFlow<LandingPageState?> = MutableStateFlow<LandingPageState?>(null)
+    private val _uiState: MutableStateFlow<LandingPageState> = MutableStateFlow<LandingPageState>(LandingPageState())
     val uiState = _uiState.asStateFlow()
 
     init {

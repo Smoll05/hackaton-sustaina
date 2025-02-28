@@ -5,6 +5,6 @@ data class User(
     val userName: Pair<String, String> = Pair("", ""),
     val userEmail: String = "",
     val userUpcomingCampaigns: List<String> = emptyList(),
-    val userLevel: Int = 0,
+    val userLevel: Int = 1,
     val userExp: Int = 0
 )

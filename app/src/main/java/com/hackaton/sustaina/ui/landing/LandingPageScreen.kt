@@ -63,14 +63,14 @@ fun LandingPageScreen(navController: NavController, viewModel: LandingPageViewMo
 
                 Column {
                     Text(
-                        text = "Level " + (uiState?.user?.userLevel ?: 0),
+                        text = "Level " + (uiState.user.userLevel),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(top = 16.dp, start = 16.dp)
                     )
 
                     LinearProgressIndicator(
-                        progress = { uiState?.progress ?: 0f},
+                        progress = { uiState.progress},
                         color = LeafyGreen,
                         trackColor = NeonGreen,
                         modifier = Modifier
@@ -79,7 +79,7 @@ fun LandingPageScreen(navController: NavController, viewModel: LandingPageViewMo
                     )
 
                     Text(
-                        text = "${uiState?.user?.userExp} / 1000 EXP",
+                        text = "${uiState.user.userExp} / 1000 EXP",
                         fontSize = 16.sp,
                         modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
                     )
@@ -98,7 +98,7 @@ fun LandingPageScreen(navController: NavController, viewModel: LandingPageViewMo
                 modifier = Modifier.padding(top = 20.dp, start = 16.dp)
             )
 
-            if (uiState?.upcomingCampaigns?.isEmpty() == true) {
+            if (uiState.upcomingCampaigns.isEmpty()) {
                 Text(
                     text = "No Upcoming Campaigns!",
                     fontSize = 18.sp,
@@ -110,11 +110,12 @@ fun LandingPageScreen(navController: NavController, viewModel: LandingPageViewMo
             } else {
                 LazyColumn(modifier = Modifier
                     .padding(16.dp)) {
-                    uiState?.let {
-                        items(it.upcomingCampaigns) {
-                            UpcomingCampaign(it.campaignId, it.campaignName, it.campaignStartDate!!, navController)
+                        items(uiState.upcomingCampaigns) {
+                            it.campaignStartDate?.let { it1 ->
+                                UpcomingCampaign(it.campaignId, it.campaignName,
+                                    it1, navController)
+                            }
                         }
-                    }
                 }
             }
         }
