@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -45,6 +46,7 @@ sealed class Routes(val route: String) {
     val currentRoute = navBackStackEntry?.destination?.route
 
     Scaffold(
+        modifier = Modifier.systemBarsPadding(),
         bottomBar = {
             if (currentRoute in listOf(
                     Routes.Landing.route,
