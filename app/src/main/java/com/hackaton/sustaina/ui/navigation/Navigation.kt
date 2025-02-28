@@ -3,12 +3,10 @@ package com.hackaton.sustaina.ui.navigation
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -17,10 +15,9 @@ import com.hackaton.sustaina.LoginPage
 import com.hackaton.sustaina.RegisterPage
 import com.hackaton.sustaina.ui.aboutissue.AboutIssue
 import com.hackaton.sustaina.ui.camera.CameraScreen
-import com.hackaton.sustaina.ui.landing.LandingPage
 import com.hackaton.sustaina.ui.landing.LandingPageScreen
+import com.hackaton.sustaina.ui.profile.ProfilePage
 import com.hackaton.sustaina.ui.map.MapScreen
-import com.hackaton.sustaina.ui.profile.ProfileScreen
 
 sealed class Routes(val route: String) {
     data object Landing : Routes("Landing")
@@ -80,7 +77,7 @@ sealed class Routes(val route: String) {
                     RegisterPage(navController = navController)
                 }
                 composable(Routes.Profile.route) {
-                    ProfileScreen(navController = navController)
+                    ProfilePage(navController = navController)
                 }
 
             }
