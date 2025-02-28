@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hackaton.sustaina.R
+import com.hackaton.sustaina.domain.models.toLocalDateTime
 import com.hackaton.sustaina.ui.theme.LeafyGreen
 import com.hackaton.sustaina.ui.theme.NeonGreen
 import java.time.LocalDateTime
@@ -111,10 +112,8 @@ fun LandingPageScreen(navController: NavController, viewModel: LandingPageViewMo
                 LazyColumn(modifier = Modifier
                     .padding(16.dp)) {
                         items(uiState.upcomingCampaigns) {
-                            it.campaignStartDate?.let { it1 ->
-                                UpcomingCampaign(it.campaignId, it.campaignName,
-                                    it1, navController)
-                            }
+                            UpcomingCampaign(it.campaignId, it.campaignName,
+                                it.campaignStartDate.toLocalDateTime(), navController)
                         }
                 }
             }

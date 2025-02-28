@@ -29,7 +29,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +45,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hackaton.sustaina.R
+import com.hackaton.sustaina.domain.models.toLocalDateTime
 import com.hackaton.sustaina.ui.theme.SustainaTheme
 import java.time.format.DateTimeFormatter
 
@@ -108,7 +108,7 @@ fun AboutIssue(navController: NavController, viewModel: AboutIssueViewModel = hi
                             .size(32.dp)
                             .align(Alignment.CenterVertically)
                     )
-                    uiState.campaignStartDate?.format(DateTimeFormatter.ofPattern("MMM dd"))?.let {
+                    uiState.campaignStartDate.toLocalDateTime().format(DateTimeFormatter.ofPattern("MMM dd"))?.let {
                         Text(
                             text = it,
                             fontSize = 18.sp,
