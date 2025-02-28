@@ -7,7 +7,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapCapabilities
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.PinConfig
 import com.hackaton.sustaina.ui.map.SustainaCampaign
