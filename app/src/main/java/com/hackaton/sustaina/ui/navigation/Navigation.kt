@@ -20,6 +20,7 @@ import com.hackaton.sustaina.LoginPage
 import com.hackaton.sustaina.RegisterPage
 import com.hackaton.sustaina.ui.aboutissue.AboutIssue
 import com.hackaton.sustaina.ui.camera.CameraScreen
+import com.hackaton.sustaina.ui.camera.VerifyCameraPermissions
 import com.hackaton.sustaina.ui.landing.LandingPageScreen
 import com.hackaton.sustaina.ui.map.MapScreen
 import com.hackaton.sustaina.ui.profile.ProfileScreen
@@ -69,7 +70,7 @@ sealed class Routes(val route: String) {
                     LandingPageScreen(navController = navController, upcomingCampaigns = events)
                 }
                 composable(Routes.Camera.route) {
-                    CameraScreen(navController = navController)
+                    VerifyCameraPermissions(navController = navController)
                 }
                 composable(Routes.Map.route) {
                     MapScreen(navController = navController)
