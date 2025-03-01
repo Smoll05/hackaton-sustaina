@@ -184,7 +184,7 @@ fun MapScreen(navController: NavController, key: Long) {
 
                     if (insideHotspot != null && currentHotspot != insideHotspot) {
                         // User ENTERED a new hotspot
-                        // TODO( HANDLE UI AND FUNCTIONALITIES FOR THIS )
+                        // TODO( HANDLE LOGIC FOR THIS )
                         Log.d("MapScreen", "User is inside a hotspot: ${insideHotspot.description}")
                         map.goToUserReportLocation(insideHotspot)
 
@@ -198,7 +198,7 @@ fun MapScreen(navController: NavController, key: Long) {
                     }
                     else if (insideHotspot == null && currentHotspot != null) {
                         // User EXITED the hotspot
-                        // TODO( HANDLE UI FOR THIS )
+                        // TODO( HANDLE LOGIC FOR THIS )
                         Log.d("MapScreen", "User has left the hotspot area")
                         showPopup = false
                         currentHotspot = null
