@@ -2,8 +2,9 @@ package com.hackaton.sustaina.ui.aboutissue
 
 import com.hackaton.sustaina.domain.models.Campaign
 
-data class AboutIssueState(
-    val campaign: Campaign = Campaign()
+data class CampaignInfoState(
+    val campaign: Campaign = Campaign(),
+    val loading: Boolean = true
     ) {
     val campaignName: String = campaign.campaignName
     val campaignStartDate: Long = campaign.campaignStartDate
