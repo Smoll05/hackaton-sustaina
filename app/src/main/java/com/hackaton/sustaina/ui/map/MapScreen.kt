@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -48,8 +50,6 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -61,19 +61,21 @@ import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.hackaton.sustaina.R
 import com.hackaton.sustaina.domain.models.Campaign
 import com.hackaton.sustaina.domain.models.Hotspot
 import com.hackaton.sustaina.domain.models.HotspotDensity
-import com.hackaton.sustaina.domain.usecases.GetCampaignUseCase
-import com.hackaton.sustaina.domain.usecases.GetHotspotUseCase
+import com.hackaton.sustaina.ui.loadingscreen.LoadingScreen
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPermissionsApi::class, MapsComposeExperimentalApi::class,
     ExperimentalMaterial3Api::class
 )
 @Composable
-fun MapScreen(navController: NavController, key: Long) {
+fun MapScreen(navController: NavController, key: Long, viewModel: MapViewModel = hiltViewModel()) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    // region init stuff
+
     val context = LocalContext.current
 
     // PERMISSIONS
@@ -94,28 +96,9 @@ fun MapScreen(navController: NavController, key: Long) {
 
     // MAP ELEMENTS
 
-    val reports = remember { GetHotspotUseCase().allHotspots() }
-    val events = remember { GetCampaignUseCase().allCampaigns() }
-    var googleMap = remember { mutableStateOf<GoogleMap?>(null) }
-    val sustainaMap = remember { mutableStateOf<SustainaMap?>(null) }
-
-    // we use the map id to have advanced markers/custom markers (this one costs money)
-    // see: https://developers.google.com/maps/documentation/android-sdk/advanced-markers/start
-    val mapId = context.getString(R.string.map_id)
-
-    val cameraPosition = rememberCameraPositionState {
-        userLocation?.let {
-            position = CameraPosition.fromLatLngZoom(
-                LatLng(it.latitude, it.longitude),
-                15f
-            )
-        } ?: reports.firstOrNull()?.let {
-            position = CameraPosition.fromLatLngZoom(
-                LatLng(it.latitude, it.longitude),
-                15f
-            )
-        }
-    }
+    val hotspots = uiState.hotspots
+    val campaigns = uiState.campaigns
+    val cameraPosition = rememberCameraPositionState { position = uiState.cameraPosition }
 
     // Handle notification and check if user is inside a hotspot
 
@@ -127,10 +110,17 @@ fun MapScreen(navController: NavController, key: Long) {
 
     val bottomSheetScope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var showBottomSheet by remember { mutableStateOf(false) }
+
     var selectedHotspot by remember { mutableStateOf<Hotspot?>(null) }
     var selectedCampaign by remember { mutableStateOf<Campaign?>(null) }
     var mapClickLocation by remember { mutableStateOf<LatLng?>(null) }
+
+    // endregion
+
+    if(uiState.loading) {
+        LoadingScreen()
+        return
+    }
 
     Box(Modifier.fillMaxSize()) {
         GoogleMap(
@@ -145,41 +135,38 @@ fun MapScreen(navController: NavController, key: Long) {
             properties = MapProperties(
                 isMyLocationEnabled = userLocation != null,
             ),
-            googleMapOptionsFactory = { GoogleMapOptions().mapId(mapId) },
+            googleMapOptionsFactory = { GoogleMapOptions().mapId(uiState.mapId) },
             onMapClick = { latLng ->
                 mapClickLocation = latLng
-                showBottomSheet = true
+                viewModel.showBottomSheet()
             }
         ) {
-            MapEffect(key) { map ->
-                googleMap.value = map
-                Log.d("MapScreen", "MapEffect called $map with ID: $key")
+            MapEffect(key) {
+                viewModel.setGoogleMap(it)
 
-                if (sustainaMap.value == null) {
-                    val newSustainaMap = SustainaMap(map)
-                    newSustainaMap.addHotspotZones(reports)
-                    newSustainaMap.addCampaignPins(events)
-                    sustainaMap.value = newSustainaMap
+                Log.d("MapScreen", "MapEffect called $it with ID: $key")
 
-                    newSustainaMap.onHotspotClick = { report ->
-                        selectedHotspot = report
-                        selectedCampaign = null
-                        showBottomSheet = true
-                    }
-                    newSustainaMap.onCampaignClick = { campaign ->
-                        selectedCampaign = campaign
-                        selectedHotspot = null
-                        showBottomSheet = true
-                    }
+                viewModel.addHotspotZones(hotspots)
+                viewModel.addCampaignPins(campaigns)
+
+                viewModel.onHotspotClick = { report ->
+                    selectedHotspot = report
+                    selectedCampaign = null
+                    viewModel.showBottomSheet()
+                }
+                viewModel.onCampaignClick = { campaign ->
+                    selectedCampaign = campaign
+                    selectedHotspot = null
+                    viewModel.showBottomSheet()
                 }
             }
         }
 
         // Bottom Sheet
-        if (showBottomSheet) {
+        if (uiState.bottomSheetState) {
             ModalBottomSheet(
                 onDismissRequest = {
-                    showBottomSheet = false
+                    viewModel.hideBottomSheet()
                     selectedHotspot = null
                     selectedCampaign = null
                     mapClickLocation = null
@@ -190,7 +177,7 @@ fun MapScreen(navController: NavController, key: Long) {
                     HotspotDetailsBottomSheet(selectedHotspot!!) {
                         bottomSheetScope.launch { sheetState.hide() }.invokeOnCompletion {
                             if (!sheetState.isVisible) {
-                                showBottomSheet = false
+                                viewModel.hideBottomSheet()
                                 selectedHotspot = null
                             }
                         }
@@ -199,32 +186,13 @@ fun MapScreen(navController: NavController, key: Long) {
                     CampaignDetailsBottomSheet(selectedCampaign!!) {
                         bottomSheetScope.launch { sheetState.hide() }.invokeOnCompletion {
                             if (!sheetState.isVisible) {
-                                showBottomSheet = false
+                                viewModel.hideBottomSheet()
                                 selectedCampaign = null
                             }
                         }
                     }
                 }
             }
-        }
-    }
-
-    // TODO might delete
-//    if (showPopup && currentHotspot != null) {
-//
-//        showPopup = false
-//        currentHotspot = null
-//    }
-
-    LaunchedEffect(userLocation) {
-        userLocation?.let { loc ->
-            val currentZoom = cameraPosition.position.zoom
-            val newLatLng = LatLng(loc.latitude, loc.longitude)
-
-            cameraPosition.animate(
-                CameraUpdateFactory.newLatLngZoom(newLatLng, currentZoom),
-                1000
-            )
         }
     }
 
@@ -245,14 +213,14 @@ fun MapScreen(navController: NavController, key: Long) {
                 userLocation = loc
                 Log.d("MapScreen", "User location: $loc")
 
-                sustainaMap.value?.let { map ->
-                    val insideHotspot = map.isUserInHotspot(loc)
+                uiState.googleMap.value!!.let { map ->
+                    val insideHotspot = viewModel.isUserInHotspot(loc)
 
                     if (insideHotspot != null && currentHotspot != insideHotspot) {
                         // User ENTERED a new hotspot
                         // TODO( HANDLE LOGIC FOR THIS )
                         Log.d("MapScreen", "User is inside a hotspot: ${insideHotspot.description}")
-                        map.goToUserReportLocation(insideHotspot)
+                        viewModel.goToUserReportLocation(insideHotspot)
 
                         if (notificationPermission.status.isGranted) {
                             notificationHelper.sendHotspotNotification(insideHotspot.description)
@@ -401,7 +369,7 @@ fun CampaignDetailsBottomSheet(campaign: Campaign, onClose: () -> Unit) {
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )
-                        Text(text = campaign.campaignDescription)
+                        Text(text = campaign.campaignAbout)
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -434,7 +402,7 @@ fun CampaignDetailsBottomSheet(campaign: Campaign, onClose: () -> Unit) {
                                     )
                                 ),
                                 title = "Hotspot Location",
-                                snippet = campaign.campaignDescription
+                                snippet = campaign.campaignAbout
                             )
                         }
                     }
