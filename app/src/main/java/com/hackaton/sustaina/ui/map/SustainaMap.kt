@@ -68,7 +68,7 @@ class SustainaMap(private val mMap: GoogleMap) {
 
             val circleOption = CircleOptions()
                 .center(latLng)
-                .radius(100.0)
+                .radius(10.0)
                 .strokeColor(strokeColor)
                 .fillColor(fillColor)
                 .strokeWidth(2f)
