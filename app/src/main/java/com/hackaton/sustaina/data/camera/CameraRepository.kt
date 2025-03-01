@@ -7,8 +7,4 @@ class CameraRepository @Inject constructor(
     private val cameraDataSource: CameraDataSource
 ) {
     var lastImageSaved: File? = null
-
-    fun setLastImageSaved(image: File) {
-        lastImageSaved = image
-    }
 }

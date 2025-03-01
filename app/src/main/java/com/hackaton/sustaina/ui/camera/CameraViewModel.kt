@@ -65,7 +65,7 @@ class CameraViewModel @Inject constructor(
                         Log.e("Camera", "The saved uri is ${outputFileResults.savedUri}")
                         _cameraState.update { CameraState.Success(outputFileResults.savedUri?.toFile()) }
                         outputFileResults.savedUri?.toFile()
-                            ?.let { cameraRepository.setLastImageSaved(it) }
+                            ?.let { cameraRepository.lastImageSaved = it }
                     }
 
                     override fun onError(exception: ImageCaptureException) {
