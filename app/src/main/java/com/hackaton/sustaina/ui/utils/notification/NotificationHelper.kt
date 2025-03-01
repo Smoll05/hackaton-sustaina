@@ -7,6 +7,7 @@ import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.hackaton.sustaina.R
 
 class NotificationHelper(private val context: Context) {
     private val channelId = "hotspot_alerts"
