@@ -1,13 +1,8 @@
 package com.hackaton.sustaina.ui.landing
 
-import android.util.Log
-import android.widget.Space
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.displayCutoutPadding
@@ -17,9 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedCard
@@ -29,37 +22,34 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.hackaton.sustaina.R
+import com.hackaton.sustaina.domain.models.toLocalDateTime
+import com.hackaton.sustaina.ui.loadingscreen.LoadingScreen
 import com.hackaton.sustaina.ui.navigation.Routes
-import com.hackaton.sustaina.ui.theme.DarkGreen
 import com.hackaton.sustaina.ui.theme.LeafyGreen
 import com.hackaton.sustaina.ui.theme.NeonGreen
-import com.hackaton.sustaina.ui.theme.SustainaTheme
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun LandingPageScreen(navController: NavController, upcomingCampaigns: List<String>, viewModel: LandingPageViewModel = hiltViewModel()) {
-    LaunchedEffect(upcomingCampaigns) {
-        upcomingCampaigns.let { viewModel.loadUpcomingCampaigns(it) }
-    }
+fun LandingPageScreen(navController: NavController, viewModel: LandingPageViewModel = hiltViewModel()) {
 
     val uiState by viewModel.uiState.collectAsState()
-    Log.d("LandingPageScreen", "Progress Value: ${uiState.progress}")
+
+    if (uiState.loading) {
+        LoadingScreen()
+        return
+    }
 
     Column(modifier = Modifier
         .padding(24.dp)
@@ -116,14 +106,14 @@ fun LandingPageScreen(navController: NavController, upcomingCampaigns: List<Stri
 
                 Column {
                     Text(
-                        text = "Level " + uiState.level,
+                        text = "Level " + (uiState.user.userLevel),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(top = 16.dp, start = 16.dp)
                     )
 
                     LinearProgressIndicator(
-                        progress = { uiState.progress },
+                        progress = { uiState.progress},
                         color = LeafyGreen,
                         trackColor = NeonGreen,
                         modifier = Modifier
@@ -132,7 +122,7 @@ fun LandingPageScreen(navController: NavController, upcomingCampaigns: List<Stri
                     )
 
                     Text(
-                        text = "${uiState.exp} / ${uiState.expToNextLvl} EXP",
+                        text = "${uiState.user.userExp} / 1000 EXP",
                         fontSize = 16.sp,
                         modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
                     )
@@ -151,7 +141,7 @@ fun LandingPageScreen(navController: NavController, upcomingCampaigns: List<Stri
                 modifier = Modifier.padding(top = 20.dp, start = 16.dp)
             )
 
-            if (upcomingCampaigns.isEmpty()) {
+            if (uiState.upcomingCampaigns.isEmpty()) {
                 Text(
                     text = "No Upcoming Campaigns!",
                     fontSize = 18.sp,
@@ -163,9 +153,10 @@ fun LandingPageScreen(navController: NavController, upcomingCampaigns: List<Stri
             } else {
                 LazyColumn(modifier = Modifier
                     .padding(16.dp)) {
-                    items(uiState.upcomingCampaigns) {
-                        UpcomingCampaign(it.campaignId, it.campaignName, it.campaignStartDate!!, navController)
-                    }
+                        items(uiState.upcomingCampaigns) {
+                            UpcomingCampaign(it.campaignId, it.campaignName,
+                                it.campaignStartDate.toLocalDateTime(), navController)
+                        }
                 }
             }
         }
@@ -178,8 +169,7 @@ fun UpcomingCampaign(campaignId: String, name: String, date: LocalDateTime, navC
     ElevatedCard(modifier = Modifier
         .fillMaxWidth()
         .clickable {
-//            navController.navigate("AboutIssue/${campaignId}")
-            navController.navigate(Routes.AboutIssue.route)
+            navController.navigate("AboutIssue/${campaignId}")
         }
         .padding(vertical = 8.dp)){
         Column(modifier = Modifier.padding(22.dp)) {
@@ -195,24 +185,5 @@ fun UpcomingCampaign(campaignId: String, name: String, date: LocalDateTime, navC
                 fontSize = 14.sp
             )
         }
-    }
-}
-
-
-//@Preview(showBackground = true)
-//@Composable
-//fun UpcomingCampaignPreview() {
-//    SustainaTheme {
-//        val date = LocalDateTime.of(2025, 3, 5, 13, 0)
-//        UpcomingCampaign("UP Hackathon Presentation", date)
-//    }
-//}
-
-@Preview(showBackground = true)
-@Composable
-fun LandingPagePreview() {
-    val events: List<String> = listOf("UP12345", "MDTM12345")
-    SustainaTheme {
-        LandingPageScreen(navController = rememberNavController(), upcomingCampaigns = emptyList())
     }
 }

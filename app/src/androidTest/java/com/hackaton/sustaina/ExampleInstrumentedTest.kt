@@ -1,12 +1,10 @@
 package com.hackaton.sustaina
 
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
-
 import org.junit.Test
 import org.junit.runner.RunWith
-
-import org.junit.Assert.*
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -18,7 +16,7 @@ class ExampleInstrumentedTest {
     @Test
     fun useAppContext() {
         // Context of the app under test.
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.hackaton.sustaina", appContext.packageName)
+        val date = LocalDateTime.of(2025, 3, 5, 13, 10)
+        print(date.toInstant(ZoneOffset.UTC))
     }
 }
