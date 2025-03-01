@@ -9,6 +9,10 @@ enum class HotspotStatus(val statusLevel: Int) {
     IN_PROGRESS(2),
     CLEANED(3);
 
+    override fun toString(): String {
+        return name.replace("_", " ")
+    }
+
     // Use this to convert a level (Integer)
     // to a HotspotStatus string (HotspotStatus.toString())
     companion object {
