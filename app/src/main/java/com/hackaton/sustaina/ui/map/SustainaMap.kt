@@ -15,6 +15,8 @@ class SustainaMap(private val mMap: GoogleMap) {
 
     private val circleZoneReportMap = mutableMapOf<Circle, UserReport>()
     private val campaignMarkerMap = mutableMapOf<Marker?, SustainaCampaign>()
+    var onHotspotClick: ((UserReport) -> Unit)? = null
+    var onCampaignClick: ((SustainaCampaign) -> Unit)? = null
 
     private fun goToLocation(latLng: LatLng) {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
@@ -35,7 +37,6 @@ class SustainaMap(private val mMap: GoogleMap) {
             val hotspotCenter = circle.center
             val distance = FloatArray(1)
 
-            // Calculate distance between user and hotspot
             Location.distanceBetween(
                 userLocation.latitude, userLocation.longitude,
                 hotspotCenter.latitude, hotspotCenter.longitude,
@@ -43,7 +44,7 @@ class SustainaMap(private val mMap: GoogleMap) {
             )
 
             if (distance[0] <= circle.radius) {
-                return report // Return the hotspot the user is inside
+                return report
             }
         }
         return null // User is not inside any hotspot
@@ -78,11 +79,9 @@ class SustainaMap(private val mMap: GoogleMap) {
             val circle = mMap.addCircle(circleOption)
             circleZoneReportMap[circle] = report
         }
-        // TODO( Handle click event when a circle is clicked )
         mMap.setOnCircleClickListener { clickedCircle ->
-            val userReport = circleZoneReportMap[clickedCircle]
-            userReport?.let {
-                println("Circle clicked: ${userReport.description}")
+            circleZoneReportMap[clickedCircle]?.let {
+                onHotspotClick?.invoke(it)
             }
         }
     }
@@ -106,10 +105,11 @@ class SustainaMap(private val mMap: GoogleMap) {
             val marker = mMap.addMarker(markerOptions)
             campaignMarkerMap[marker] = event
         }
-        // TODO( Handle click event when a pin is clicked )
+
         mMap.setOnMarkerClickListener { clickedMarker ->
-            val campaign = campaignMarkerMap[clickedMarker]
-            println("Event marker clicked: ${campaign?.name}")
+            campaignMarkerMap[clickedMarker]?.let {
+                onCampaignClick?.invoke(it)
+            }
             true
         }
     }
