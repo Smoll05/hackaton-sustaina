@@ -3,11 +3,14 @@ package com.hackaton.sustaina.ui.campaigninfo
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.hackaton.sustaina.data.campaign.CampaignRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,9 +26,20 @@ class CampaignInfoViewModel @Inject constructor (
     val uiState = _uiState.asStateFlow()
 
     init {
-        Log.d(TAG, "gonna get details for $campaignId")
-        repository.fetchCampaign(campaignId) { campaign ->
-            _uiState.value = campaign?.let { CampaignInfoState(it) }!!
+        viewModelScope.launch {
+            Log.d(TAG, "gonna get details for $campaignId")
+            val startTime = System.currentTimeMillis()
+
+            repository.fetchCampaign(campaignId) { campaign ->
+                _uiState.value = campaign?.let { CampaignInfoState(it) }!!
+            }
+
+            val elapsedTime = System.currentTimeMillis() - startTime
+            val remainingTime = 500L - elapsedTime
+
+            if (remainingTime > 0) {
+                delay(remainingTime)
+            }
             _uiState.update { it.copy(loading = false) }
         }
     }

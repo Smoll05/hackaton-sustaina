@@ -5,8 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hackaton.sustaina.data.auth.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,8 +22,17 @@ class LoginViewModel @Inject constructor(
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
-            _loginState.value = LoginState.Loading
+            _loginState.update { LoginState.Loading }
+            val startTime = System.currentTimeMillis()
+
             val result = authRepository.login(email, password)
+
+            val elapsedTime = System.currentTimeMillis() - startTime
+            val remainingTime = 1000L - elapsedTime
+
+            if (remainingTime > 0) {
+                delay(remainingTime)
+            }
             result.onSuccess { user ->
                 _loginState.value = LoginState.Success(user)
                 Log.d("ACCOUNT SIGNED", "Successful")
