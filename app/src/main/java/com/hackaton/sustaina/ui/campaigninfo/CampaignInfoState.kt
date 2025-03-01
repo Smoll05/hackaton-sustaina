@@ -13,5 +13,5 @@ data class CampaignInfoState(
     val campaignAddress: String = campaign.campaignAddress
     val campaignVenue: String = campaign.campaignVenue
     val campaignOrganizer: String = campaign.campaignOrganizer
-    val campaignAbout: String = campaign.campaignDescription
+    val campaignAbout: String = campaign.campaignAbout
 }
