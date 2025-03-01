@@ -62,6 +62,11 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.hackaton.sustaina.R
+import com.hackaton.sustaina.domain.models.Campaign
+import com.hackaton.sustaina.domain.models.Hotspot
+import com.hackaton.sustaina.domain.models.HotspotDensity
+import com.hackaton.sustaina.domain.usecases.GetCampaignUseCase
+import com.hackaton.sustaina.domain.usecases.GetHotspotUseCase
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPermissionsApi::class, MapsComposeExperimentalApi::class,
@@ -89,8 +94,8 @@ fun MapScreen(navController: NavController, key: Long) {
 
     // MAP ELEMENTS
 
-    val reports = remember { SustainaUserReports().allReports() }
-    val events = remember { SustainaCampaigns().allCampaigns() }
+    val reports = remember { GetHotspotUseCase().allHotspots() }
+    val events = remember { GetCampaignUseCase().allCampaigns() }
     var googleMap = remember { mutableStateOf<GoogleMap?>(null) }
     val sustainaMap = remember { mutableStateOf<SustainaMap?>(null) }
 
@@ -115,7 +120,7 @@ fun MapScreen(navController: NavController, key: Long) {
     // Handle notification and check if user is inside a hotspot
 
     var showPopup by remember { mutableStateOf(false) }
-    var currentHotspot by remember { mutableStateOf<UserReport?>(null) }
+    var currentHotspot by remember { mutableStateOf<Hotspot?>(null) }
     val notificationHelper = remember { NotificationHelper(context) }
 
     // Handle bottom sheet (the pop up sheet when user clicks on a circle(hotspot) or pin(campaign))
@@ -123,8 +128,8 @@ fun MapScreen(navController: NavController, key: Long) {
     val bottomSheetScope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showBottomSheet by remember { mutableStateOf(false) }
-    var selectedHotspot by remember { mutableStateOf<UserReport?>(null) }
-    var selectedCampaign by remember { mutableStateOf<SustainaCampaign?>(null) }
+    var selectedHotspot by remember { mutableStateOf<Hotspot?>(null) }
+    var selectedCampaign by remember { mutableStateOf<Campaign?>(null) }
     var mapClickLocation by remember { mutableStateOf<LatLng?>(null) }
 
     Box(Modifier.fillMaxSize()) {
@@ -272,8 +277,8 @@ fun MapScreen(navController: NavController, key: Long) {
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun HotspotDetailsBottomSheet(hotspot: UserReport, onClose: () -> Unit) {
-    val hotspotDensity = HotspotDensity.fromLevel(hotspot.density)
+fun HotspotDetailsBottomSheet(hotspot: Hotspot, onClose: () -> Unit) {
+    val hotspotDensity = HotspotDensity.fromLevel(hotspot.densityLevel)
 
     Column(
         modifier = Modifier
@@ -357,7 +362,7 @@ fun HotspotDetailsBottomSheet(hotspot: UserReport, onClose: () -> Unit) {
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun CampaignDetailsBottomSheet(campaign: SustainaCampaign, onClose: () -> Unit) {
+fun CampaignDetailsBottomSheet(campaign: Campaign, onClose: () -> Unit) {
 
     Column(
         modifier = Modifier
@@ -389,14 +394,14 @@ fun CampaignDetailsBottomSheet(campaign: SustainaCampaign, onClose: () -> Unit) 
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )
-                        Text(text = campaign.name)
+                        Text(text = campaign.campaignName)
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = "Description:",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )
-                        Text(text = campaign.description)
+                        Text(text = campaign.campaignDescription)
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -429,7 +434,7 @@ fun CampaignDetailsBottomSheet(campaign: SustainaCampaign, onClose: () -> Unit) 
                                     )
                                 ),
                                 title = "Hotspot Location",
-                                snippet = campaign.description
+                                snippet = campaign.campaignDescription
                             )
                         }
                     }
