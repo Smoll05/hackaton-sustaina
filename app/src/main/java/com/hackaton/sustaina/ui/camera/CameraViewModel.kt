@@ -11,6 +11,7 @@ import androidx.camera.core.ImageCaptureException
 import androidx.core.net.toFile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hackaton.sustaina.data.camera.CameraRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CameraViewModel @Inject constructor(
-
+    private val cameraRepository: CameraRepository
 ) : ViewModel() {
 
     private val _cameraState : MutableStateFlow<CameraState> = MutableStateFlow(CameraState.Idle)
@@ -63,6 +64,8 @@ class CameraViewModel @Inject constructor(
                     override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                         Log.e("Camera", "The saved uri is ${outputFileResults.savedUri}")
                         _cameraState.update { CameraState.Success(outputFileResults.savedUri?.toFile()) }
+                        outputFileResults.savedUri?.toFile()
+                            ?.let { cameraRepository.setLastImageSaved(it) }
                     }
 
                     override fun onError(exception: ImageCaptureException) {
