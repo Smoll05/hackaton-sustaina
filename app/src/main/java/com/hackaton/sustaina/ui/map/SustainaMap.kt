@@ -29,6 +29,25 @@ class SustainaMap(private val mMap: GoogleMap) {
         goToLocation(latLng)
     }
 
+    fun isUserInHotspot(userLocation: LatLng): UserReport? {
+        for ((circle, report) in circleZoneReportMap) {
+            val hotspotCenter = circle.center
+            val distance = FloatArray(1)
+
+            // Calculate distance between user and hotspot
+            Location.distanceBetween(
+                userLocation.latitude, userLocation.longitude,
+                hotspotCenter.latitude, hotspotCenter.longitude,
+                distance
+            )
+
+            if (distance[0] <= circle.radius) {
+                return report // Return the hotspot the user is inside
+            }
+        }
+        return null // User is not inside any hotspot
+    }
+
     fun addHotspotZones(reports: List<UserReport>) {
         reports.forEach { report ->
             val latLng = LatLng(report.latitude, report.longitude)
