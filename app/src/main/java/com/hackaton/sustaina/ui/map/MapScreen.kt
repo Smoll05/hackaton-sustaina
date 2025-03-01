@@ -1,9 +1,15 @@
 package com.hackaton.sustaina.ui.map
 
+import com.hackaton.sustaina.ui.utils.notification.NotificationHelper
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
+import android.os.Build
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -17,13 +23,16 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapCapabilities
-import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapEffect
 import com.google.maps.android.compose.MapProperties
@@ -34,30 +43,36 @@ import com.hackaton.sustaina.R
 
 @OptIn(ExperimentalPermissionsApi::class, MapsComposeExperimentalApi::class)
 @Composable
-fun MapScreen(navController: NavController) {
+fun MapScreen(navController: NavController, key: Long) {
     val context = LocalContext.current
+
+    // PERMISSIONS
+
     val locationPermissionState = rememberPermissionState(
         permission = Manifest.permission.ACCESS_FINE_LOCATION
     )
+    val notificationPermission = rememberPermissionState(
+            permission = Manifest.permission.POST_NOTIFICATIONS
+    )
+
+    // LOCATION STUFF
+
     val fusedLocationProviderClient = remember {
         LocationServices.getFusedLocationProviderClient(context)
     }
-
     var userLocation by remember { mutableStateOf<LatLng?>(null) }
 
-    LaunchedEffect(Unit) {
-        if (!locationPermissionState.status.isGranted) {
-            locationPermissionState.launchPermissionRequest()
-        }
-        else {
-            fetchUserLocation(fusedLocationProviderClient) {
-                loc -> userLocation = loc
-            }
-        }
-    }
+    // MAP ELEMENTS
 
     val reports = remember { SustainaUserReports().allReports() }
     val events = remember { SustainaCampaigns().allCampaigns() }
+    var googleMap = remember { mutableStateOf<GoogleMap?>(null) }
+    val sustainaMap = remember { mutableStateOf<SustainaMap?>(null) }
+
+    // we use the map id to have advanced markers/custom markers (this one costs money)
+    // see: https://developers.google.com/maps/documentation/android-sdk/advanced-markers/start
+    val mapId = context.getString(R.string.map_id)
+
     val cameraPosition = rememberCameraPositionState {
         userLocation?.let {
             position = CameraPosition.fromLatLngZoom(
@@ -71,10 +86,13 @@ fun MapScreen(navController: NavController) {
             )
         }
     }
-    var googleMap = remember { mutableStateOf<GoogleMap?>(null) }
-    // we use the map id to have advanced markers (this one costs money)
-    // see: https://developers.google.com/maps/documentation/android-sdk/advanced-markers/start
-    val mapId = context.getString(R.string.map_id)
+
+    // Handle notification and check if user is inside a hotspot
+
+    var showPopup by remember { mutableStateOf(false) }
+    var currentHotspot by remember { mutableStateOf<UserReport?>(null) }
+    val notificationHelper = remember { NotificationHelper(context) }
+
 
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
@@ -86,43 +104,126 @@ fun MapScreen(navController: NavController) {
             rotationGesturesEnabled = true
         ),
         properties = MapProperties(
-            isMyLocationEnabled = locationPermissionState.status.isGranted
+            isMyLocationEnabled = userLocation != null
         ),
         googleMapOptionsFactory = { GoogleMapOptions().mapId(mapId) }
     ) {
-        MapEffect(Unit) { map ->
+        MapEffect(key) { map ->
             googleMap.value = map
-        }
-        googleMap.value?.let { mapInstance ->
-            val capabilities: MapCapabilities = mapInstance.mapCapabilities
-            Log.d("MapScreen", "is advanced marker enabled? "
-                    + capabilities.isAdvancedMarkersAvailable)
+            Log.d("MapScreen", "MapEffect called $map with ID: $key")
 
-            mapInstance.setMapStyle(
-                MapStyleOptions.loadRawResourceStyle(
-                    context,
-                    R.raw.map_style
-                )
-            )
-            val sustainaMap = remember { SustainaMap(mapInstance) }
-            sustainaMap.addHotspotZones(reports)
-            sustainaMap.addCampaignPins(events)
+            if(sustainaMap.value == null) {
+                sustainaMap.value = SustainaMap(map)
+                sustainaMap.value?.addHotspotZones(reports)
+                sustainaMap.value?.addCampaignPins(events)
+            }
         }
     }
+
+    if (showPopup && currentHotspot != null) {
+        HotspotPopup(currentHotspot!!) {
+            showPopup = false
+            currentHotspot = null
+        }
+    }
+
+    LaunchedEffect(userLocation) {
+        userLocation?.let { loc ->
+            val currentZoom = cameraPosition.position.zoom
+            val newLatLng = LatLng(loc.latitude, loc.longitude)
+
+            cameraPosition.animate(
+                CameraUpdateFactory.newLatLngZoom(newLatLng, currentZoom),
+                1000
+            )
+        }
+    }
+
+    LaunchedEffect(key) {
+        Log.d("MapScreen", "LaunchedEffect called with key: $key")
+        Log.d("MapScreen", "LaunchedEffect triggered. Permission: ${locationPermissionState.status.isGranted}")
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !notificationPermission.status.isGranted) {
+            notificationPermission.launchPermissionRequest()
+        }
+
+        if (!locationPermissionState.status.isGranted) {
+            Log.d("MapScreen", "Requesting permissions.")
+            locationPermissionState.launchPermissionRequest()
+        }
+        else {
+            Log.d("MapScreen", "Fetching user location.")
+            startLocationUpdates(fusedLocationProviderClient, context) { loc ->
+                userLocation = loc
+                Log.d("MapScreen", "User location: $loc")
+
+                sustainaMap.value?.let { map ->
+                    val insideHotspot = map.isUserInHotspot(loc)
+
+                    if (insideHotspot != null && currentHotspot != insideHotspot) {
+                        // User ENTERED a new hotspot
+                        // TODO( HANDLE UI FOR THIS )
+                        Log.d("MapScreen", "User is inside a hotspot: ${insideHotspot.description}")
+                        map.goToUserReportLocation(insideHotspot)
+
+                        if (notificationPermission.status.isGranted) {
+                            notificationHelper.sendHotspotNotification(insideHotspot.description)
+                        } else {
+                            Log.d("MapScreen", "Notification permission is not granted. Skipping notification.")
+                        }
+//                        showPopup = true
+                        currentHotspot = insideHotspot
+                    }
+                    else if (insideHotspot == null && currentHotspot != null) {
+                        // User EXITED the hotspot
+                        // TODO( HANDLE UI FOR THIS )
+                        Log.d("MapScreen", "User has left the hotspot area")
+                        showPopup = false
+                        currentHotspot = null
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun HotspotPopup(hotspot: UserReport, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = { onDismiss() },
+        title = { Text("Garbage Hotspot Alert!") },
+        text = { Text("You're in a hotspot zone:\n\n${hotspot.description}") },
+        confirmButton = {
+            Button(onClick = { onDismiss() }) {
+                Text("OK")
+            }
+        }
+    )
 }
 
 @SuppressLint("MissingPermission")
-private fun fetchUserLocation(
+private fun startLocationUpdates(
     fusedLocationProviderClient: FusedLocationProviderClient,
+    context: Context,
     onLocationReceived: (LatLng) -> Unit
 ) {
-    fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
-        location?.let {
-            val latLng = LatLng(it.latitude, it.longitude)
-            onLocationReceived(latLng)
-        } ?: Log.e("MapScreen", "User location is null")
-    }.addOnFailureListener { e: Exception ->
-        Log.e("MapScreen", "Failed to get user location", e)
-    }
-}
+    val locationRequest = LocationRequest.Builder(
+        Priority.PRIORITY_HIGH_ACCURACY,
+        5000
+    ).build()
 
+    val locationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            locationResult.lastLocation?.let { location ->
+                val latLng = LatLng(location.latitude, location.longitude)
+                onLocationReceived(latLng)
+                Log.d("MapScreen", "User location: $latLng")
+            }
+        }
+    }
+
+    fusedLocationProviderClient.requestLocationUpdates(
+        locationRequest,
+        locationCallback,
+        context.mainLooper
+    )
+}
