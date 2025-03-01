@@ -18,15 +18,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,7 +39,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.Role.Companion.Button
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -49,11 +48,14 @@ import com.hackaton.sustaina.ui.navigation.Routes
 import com.hackaton.sustaina.R
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
+import com.hackaton.sustaina.ui.loadingscreen.LoadingScreen
 import java.util.Locale
 
 @Composable
-fun ProfilePage(navController: NavController) {
+fun ProfilePage(navController: NavController,
+                profileViewModel: ProfileViewModel = hiltViewModel()) {
     // Todo: Implement user data retrieval in here, temporary variables for now
     val userName = "John Doe"
     val userId = "12345678"
@@ -62,6 +64,21 @@ fun ProfilePage(navController: NavController) {
     val experience = 12300
     val level = 10
     val images = listOf("")
+
+    val logoutState by profileViewModel.logoutState.collectAsState()
+
+    LaunchedEffect(logoutState) {
+        if (logoutState is ProfileViewModel.LogoutState.Success) {
+            navController.navigate(Routes.Login.route) {
+                popUpTo(Routes.Landing.route) { inclusive = true }
+            }
+        }
+    }
+
+    if (logoutState is ProfileViewModel.LogoutState.Loading) {
+        LoadingScreen()
+        return
+    }
 
     Box(
         modifier = Modifier
@@ -240,6 +257,7 @@ fun ProfilePage(navController: NavController) {
             }
 
             if (showDialog) {
+
                 Dialog(onDismissRequest = { showDialog = false }) {
                     Surface(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -274,12 +292,11 @@ fun ProfilePage(navController: NavController) {
                             ) {
                                 Button(
                                     onClick = {
-                                        // ToDo: User logs out from the database
-
-                                        // ensure user cannot go back to profile page once signed out
                                         navController.navigate(Routes.Login.route) {
                                             popUpTo(Routes.Landing.route) { inclusive = true }
                                         }
+
+                                        profileViewModel.logout()
                                         showDialog = false
                                     },
                                     modifier = Modifier
