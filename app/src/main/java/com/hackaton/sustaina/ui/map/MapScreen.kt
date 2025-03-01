@@ -250,7 +250,7 @@ fun MapScreen(navController: NavController, key: Long, viewModel: MapViewModel =
                 userLocation = loc
                 Log.d("MapScreen", "User location: $loc")
 
-                uiState.googleMap.value!!.let { map ->
+                uiState.googleMap.value.let { map ->
                     val insideHotspot = viewModel.isUserInHotspot(loc)
 
                     if (insideHotspot != null && currentHotspot != insideHotspot) {
