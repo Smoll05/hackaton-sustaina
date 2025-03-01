@@ -26,14 +26,14 @@ import com.hackaton.sustaina.ui.campaigninfo.CampaignInfoScreen
 import com.hackaton.sustaina.ui.camera.VerifyCameraPermissions
 import com.hackaton.sustaina.ui.landing.LandingPageScreen
 import com.hackaton.sustaina.ui.map.MapScreen
-import com.hackaton.sustaina.ui.profile.ProfileScreen
+import com.hackaton.sustaina.ui.profile.ProfilePage
 
 sealed class Routes(val route: String) {
     data object Landing : Routes("Landing")
     data object Login : Routes("Login")
     data object Register : Routes("Register")
     data object Camera : Routes("Camera")
-    data object SignOut : Routes("Sign Out")
+//    data object SignOut : Routes("Sign Out")
     data object Map : Routes("Map")
     data object AboutIssue : Routes("AboutIssue/{campaignId}")
     data object Profile : Routes("Profile")
@@ -85,6 +85,7 @@ fun Navigation() {
                     MapScreen(navController = navController)
                 }
 
+                // Other Screens
                 composable(Routes.Login.route) {
                     LoginPage(navController = navController)
                 }
@@ -92,7 +93,7 @@ fun Navigation() {
                     RegisterPage(navController = navController)
                 }
                 composable(Routes.Profile.route) {
-                    ProfileScreen(navController = navController)
+                    ProfilePage(navController = navController)
                 }
                 composable(
                     route = Routes.AboutIssue.route,

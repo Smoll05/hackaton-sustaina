@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,14 +18,23 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -38,6 +48,8 @@ import androidx.navigation.NavController
 import com.hackaton.sustaina.ui.navigation.Routes
 import com.hackaton.sustaina.R
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.window.Dialog
+import androidx.navigation.compose.rememberNavController
 import java.util.Locale
 
 @Composable
@@ -70,7 +82,6 @@ fun ProfilePage(navController: NavController) {
                 )
         )
 
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -79,7 +90,7 @@ fun ProfilePage(navController: NavController) {
                     color = MaterialTheme.colorScheme.background,
                     shape = RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp)
                 )
-                .offset(y = (-80).dp)
+                .offset(y = (-40).dp)
                 .padding(horizontal = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -105,7 +116,7 @@ fun ProfilePage(navController: NavController) {
                 Text(text = email)
             }
 
-            Spacer(Modifier.height(30.dp))
+            Spacer(Modifier.height(15.dp))
 
             LazyRow(
                 horizontalArrangement = Arrangement.SpaceEvenly,
@@ -165,7 +176,7 @@ fun ProfilePage(navController: NavController) {
                 }
             }
 
-            Spacer(Modifier.height(30.dp))
+            Spacer(Modifier.height(15.dp))
 
             Box(
                 modifier = Modifier
@@ -207,8 +218,11 @@ fun ProfilePage(navController: NavController) {
             }
 
             Spacer(Modifier.height(30.dp))
+
+            var showDialog by remember { mutableStateOf(false) }
+
             Button(
-                onClick = {navController.navigate(Routes.Login.route)},
+                onClick = { showDialog = true },
                 modifier = Modifier
                     .width(150.dp)
                     .height(50.dp),
@@ -225,31 +239,97 @@ fun ProfilePage(navController: NavController) {
                 )
             }
 
+            if (showDialog) {
+                Dialog(onDismissRequest = { showDialog = false }) {
+                    Surface(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        shape = RoundedCornerShape(30.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp)
+                            .shadow(
+                                elevation = 8.dp,
+                                shape = RoundedCornerShape(30.dp),
+                                clip = false
+                            )
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.padding(15.dp)
+                        ) {
+                            Spacer(modifier = Modifier.height(5.dp))
+                            Text("Confirm sign out", fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(5.dp))
+                            HorizontalDivider(
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                thickness = 1.dp,
+                                color = Color.Gray
+                            )
+                            Spacer(modifier = Modifier.height(15.dp))
+                            Text("Are you sure you want to sign out?")
+                            Spacer(modifier = Modifier.height(20.dp))
+                            Row(
+                                horizontalArrangement = Arrangement.SpaceEvenly,
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                            ) {
+                                Button(
+                                    onClick = {
+                                        // ToDo: User logs out from the database
+
+                                        navController.navigate(Routes.Login.route)
+                                        showDialog = false
+                                    },
+                                    modifier = Modifier
+                                        .width(110.dp)
+                                        .padding(8.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        Color(0xFFD36B6B),
+                                        contentColor = Color.White
+                                    )
+                                ) {
+                                    Text("Yes")
+                                }
+
+                                Button(
+                                    onClick = { showDialog = false },
+                                    modifier = Modifier
+                                        .width(110.dp)
+                                        .padding(8.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        Color(0xFFB9B9B9),
+                                        contentColor = Color.White
+                                    )
+                                ) {
+                                    Text("No")
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+
+
         }
-
-
 
         Image(
             painter = painterResource(R.drawable.icon_back),
             contentDescription = "Back Button",
             modifier = Modifier
-                .size(50.dp)
+                .size(40.dp)
                 .graphicsLayer(
-                    translationX = 100f,
-                    translationY = 100f
+                    translationX = 90f,
+                    translationY = 90f
                 )
                 .clickable {
                     navController.navigate(Routes.Landing.route)
                 }
         )
-
-
-
     }
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewProfilePage() {
-//    ProfilePage(navController = rememberNavController())
-//}
+@Preview(showBackground = true)
+@Composable
+fun PreviewProfilePage() {
+    ProfilePage(navController = rememberNavController())
+}
