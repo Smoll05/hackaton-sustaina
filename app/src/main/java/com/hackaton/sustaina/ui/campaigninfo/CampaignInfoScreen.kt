@@ -162,8 +162,14 @@ fun CampaignInfoScreen(navController: NavController, viewModel: CampaignInfoView
             sheetState = sheetState,
             onDismiss = { viewModel.hideOfferSolutionSheet() },
             onSubmit = {
-                Toast.makeText(context, "Your solution has been offered!", Toast.LENGTH_LONG).show()
-                viewModel.hideOfferSolutionSheet()
+                viewModel.submitSolution(it) { success, message ->
+                    if (success) {
+                        Toast.makeText(context, "Your solution has been offered!", Toast.LENGTH_LONG).show()
+                        viewModel.hideOfferSolutionSheet()
+                    } else {
+                        Toast.makeText(context, "An error occurred: $message", Toast.LENGTH_LONG).show()
+                    }
+                }
             }
         )
     }
@@ -274,7 +280,7 @@ fun JoinCampaignSheet(sheetState: SheetState, campaignName: String, onDismiss: (
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OfferSolutionSheet(sheetState: SheetState, onDismiss: () -> Unit, onSubmit: () -> Unit) {
+fun OfferSolutionSheet(sheetState: SheetState, onDismiss: () -> Unit, onSubmit: (String) -> Unit) {
     var solutionText by remember { mutableStateOf("") }
 
     ModalBottomSheet(
@@ -304,7 +310,7 @@ fun OfferSolutionSheet(sheetState: SheetState, onDismiss: () -> Unit, onSubmit: 
             Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.padding(top = 8.dp)) {
                 Button(
                     onClick = {
-                        onSubmit()
+                        onSubmit(solutionText)
                     },
                     modifier = Modifier.padding(vertical = 16.dp, horizontal = 4.dp).weight(1.0f)
                 ) {
