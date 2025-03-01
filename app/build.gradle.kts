@@ -116,6 +116,9 @@ dependencies {
     // Fused Location API; obtain current location of user
     implementation("com.google.android.gms:play-services-location:21.3.0")
 
+    // Background location when app is not active screen // NOT IMPLEMENTED
+//    implementation("androidx.work:work-runtime-ktx:2.10.0")
+
 }
 
 kapt {
