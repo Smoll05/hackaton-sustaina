@@ -11,7 +11,7 @@ data class Campaign(
     val campaignOrganizerId: String = "",
     val campaignOrganizer: String = "",
     val campaignStartDate: Long = Instant.now().toEpochMilli(),
-    val campaignDescription: String = "",
+    val campaignAbout: String = "",
     val campaignVenue: String = "",
     val campaignAddress: String = "",
     val latitude: Double = 0.0,
