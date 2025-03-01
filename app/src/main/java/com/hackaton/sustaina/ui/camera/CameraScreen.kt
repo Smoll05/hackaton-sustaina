@@ -31,6 +31,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -99,7 +100,7 @@ fun CameraScreen(navController: NavController) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    var flashAlpha by remember { mutableStateOf(0f) }
+    var flashAlpha by remember { mutableFloatStateOf(0f) }
     val animatedAlpha by animateFloatAsState(
         targetValue = flashAlpha,
         animationSpec = tween(durationMillis = 100)
