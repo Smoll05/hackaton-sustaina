@@ -75,7 +75,8 @@ sealed class Routes(val route: String) {
                     VerifyCameraPermissions(navController = navController)
                 }
                 composable(Routes.Map.route) {
-                    MapScreen(navController = navController)
+                    val key = System.currentTimeMillis()
+                    MapScreen(navController = navController, key)
                 }
                 composable(Routes.AboutIssue.route) {
                     AboutIssue(navController = navController)
