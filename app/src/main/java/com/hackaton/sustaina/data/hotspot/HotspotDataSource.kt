@@ -1,6 +1,9 @@
 package com.hackaton.sustaina.data.hotspot
 
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.hackaton.sustaina.domain.models.Hotspot
 import javax.inject.Inject
 
@@ -25,16 +28,31 @@ class HotspotDataSource @Inject constructor(
     }
 
     fun getHotspots(onComplete: (List<Hotspot>) -> Unit) {
-        hotspotRef.get().addOnSuccessListener { snapshot ->
-            val hotspots = mutableListOf<Hotspot>()
-            for (campaignSnapshot in snapshot.children) {
-                val hotspot = campaignSnapshot.getValue(Hotspot::class.java)
-                hotspot?.let { hotspots.add(hotspot) }
+        hotspotRef.get()
+            .addOnSuccessListener { snapshot ->
+                val hotspots = mutableListOf<Hotspot>()
+                for (campaignSnapshot in snapshot.children) {
+                    val hotspot = campaignSnapshot.getValue(Hotspot::class.java)
+                    hotspot?.let { hotspots.add(hotspot) }
             }
             onComplete(hotspots)
         }
-            .addOnFailureListener {
+        .addOnFailureListener { onComplete(emptyList()) }
+    }
+
+    fun observeHotspots(onComplete: (List<Hotspot>) -> Unit) {
+        hotspotRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val hotspots = mutableListOf<Hotspot>()
+                for (hotspotSnapshot in snapshot.children) {
+                    val hotspot = hotspotSnapshot.getValue(Hotspot::class.java)
+                    hotspot?.let { hotspots.add(hotspot) }
+                }
+                onComplete(hotspots)
+            }
+            override fun onCancelled(error: DatabaseError) {
                 onComplete(emptyList())
             }
+        })
     }
 }
