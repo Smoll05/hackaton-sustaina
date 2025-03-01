@@ -16,4 +16,8 @@ class CampaignRepository(
     fun fetchCampaigns(onComplete: (List<Campaign>) -> Unit) {
         databaseSource.getCampaigns(onComplete)
     }
+
+    fun observeCampaigns(onComplete: (List<Campaign>) -> Unit) {
+        databaseSource.observeCampaigns(onComplete)
+    }
 }
