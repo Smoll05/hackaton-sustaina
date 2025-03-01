@@ -118,29 +118,88 @@ fun MapScreen(navController: NavController, key: Long) {
     var currentHotspot by remember { mutableStateOf<UserReport?>(null) }
     val notificationHelper = remember { NotificationHelper(context) }
 
+    // Handle bottom sheet (the pop up sheet when user clicks on a circle(hotspot) or pin(campaign))
 
-    GoogleMap(
-        modifier = Modifier.fillMaxSize(),
-        cameraPositionState = cameraPosition,
-        uiSettings = MapUiSettings(
-            zoomControlsEnabled = true,
-            compassEnabled = true,
-            tiltGesturesEnabled = true,
-            rotationGesturesEnabled = true
-        ),
-        properties = MapProperties(
-            isMyLocationEnabled = userLocation != null
-        ),
-        googleMapOptionsFactory = { GoogleMapOptions().mapId(mapId) }
-    ) {
-        MapEffect(key) { map ->
-            googleMap.value = map
-            Log.d("MapScreen", "MapEffect called $map with ID: $key")
+    val bottomSheetScope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var showBottomSheet by remember { mutableStateOf(false) }
+    var selectedHotspot by remember { mutableStateOf<UserReport?>(null) }
+    var selectedCampaign by remember { mutableStateOf<SustainaCampaign?>(null) }
+    var mapClickLocation by remember { mutableStateOf<LatLng?>(null) }
 
-            if(sustainaMap.value == null) {
-                sustainaMap.value = SustainaMap(map)
-                sustainaMap.value?.addHotspotZones(reports)
-                sustainaMap.value?.addCampaignPins(events)
+    Box(Modifier.fillMaxSize()) {
+        GoogleMap(
+            modifier = Modifier.fillMaxSize(),
+            cameraPositionState = cameraPosition,
+            uiSettings = MapUiSettings(
+                zoomControlsEnabled = true,
+                compassEnabled = true,
+                tiltGesturesEnabled = true,
+                rotationGesturesEnabled = true
+            ),
+            properties = MapProperties(
+                isMyLocationEnabled = userLocation != null,
+            ),
+            googleMapOptionsFactory = { GoogleMapOptions().mapId(mapId) },
+            onMapClick = { latLng ->
+                mapClickLocation = latLng
+                showBottomSheet = true
+            }
+        ) {
+            MapEffect(key) { map ->
+                googleMap.value = map
+                Log.d("MapScreen", "MapEffect called $map with ID: $key")
+
+                if (sustainaMap.value == null) {
+                    val newSustainaMap = SustainaMap(map)
+                    newSustainaMap.addHotspotZones(reports)
+                    newSustainaMap.addCampaignPins(events)
+                    sustainaMap.value = newSustainaMap
+
+                    newSustainaMap.onHotspotClick = { report ->
+                        selectedHotspot = report
+                        selectedCampaign = null
+                        showBottomSheet = true
+                    }
+                    newSustainaMap.onCampaignClick = { campaign ->
+                        selectedCampaign = campaign
+                        selectedHotspot = null
+                        showBottomSheet = true
+                    }
+                }
+            }
+        }
+
+        // Bottom Sheet
+        if (showBottomSheet) {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    showBottomSheet = false
+                    selectedHotspot = null
+                    selectedCampaign = null
+                    mapClickLocation = null
+                },
+                sheetState = sheetState
+            ) {
+                if (selectedHotspot != null) {
+                    HotspotDetailsBottomSheet(selectedHotspot!!) {
+                        bottomSheetScope.launch { sheetState.hide() }.invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                showBottomSheet = false
+                                selectedHotspot = null
+                            }
+                        }
+                    }
+                } else if (selectedCampaign != null) {
+                    CampaignDetailsBottomSheet(selectedCampaign!!) {
+                        bottomSheetScope.launch { sheetState.hide() }.invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                showBottomSheet = false
+                                selectedCampaign = null
+                            }
+                        }
+                    }
+                }
             }
         }
     }
