@@ -143,12 +143,12 @@ fun MapScreen(navController: NavController, key: Long) {
         }
     }
 
-    if (showPopup && currentHotspot != null) {
-        HotspotPopup(currentHotspot!!) {
-            showPopup = false
-            currentHotspot = null
-        }
-    }
+    // TODO might delete
+//    if (showPopup && currentHotspot != null) {
+//
+//        showPopup = false
+//        currentHotspot = null
+//    }
 
     LaunchedEffect(userLocation) {
         userLocation?.let { loc ->
