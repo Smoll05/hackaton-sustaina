@@ -1,26 +1,45 @@
 {
   "project_info": {
-    "project_number": "680817869261",
-    "project_id": "sample-sustaina-61a0c",
-    "storage_bucket": "sample-sustaina-61a0c.firebasestorage.app"
+    "project_number": "76391754914",
+    "firebase_url": "https://hackaton-sustaina-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "hackaton-sustaina",
+    "storage_bucket": "hackaton-sustaina.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:680817869261:android:040f6fdcd93a3e483b0484",
+        "mobilesdk_app_id": "1:76391754914:android:69cd69d0a5378cdcaa3bfb",
         "android_client_info": {
           "package_name": "com.hackaton.sustaina"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "76391754914-k74hfjgh8turle5n23c56tmnj3o17d59.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hackaton.sustaina",
+            "certificate_hash": "f7e30964e76de8f3a71e09f1ad9ac69c22a7e325"
+          }
+        },
+        {
+          "client_id": "76391754914-6e5djcvm55tkhrht72ropgvtbng2djep.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyBpkTGLKd9BoHD7dNfOai0_jq1hwiDiRKY"
+          "current_key": "AIzaSyBRiXxRKq92n4_CwVH6UilNhBAVr9F9J7s"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "76391754914-6e5djcvm55tkhrht72ropgvtbng2djep.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

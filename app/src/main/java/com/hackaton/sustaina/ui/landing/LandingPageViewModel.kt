@@ -1,28 +1,52 @@
 package com.hackaton.sustaina.ui.landing
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.hackaton.sustaina.data.repository.CampaignRepository
-import com.hackaton.sustaina.ui.aboutissue.CampaignState
+import com.hackaton.sustaina.data.auth.AuthRepository
+import com.hackaton.sustaina.data.campaign.CampaignRepository
+import com.hackaton.sustaina.data.user.UserRepository
+import com.hackaton.sustaina.domain.models.Campaign
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
 class LandingPageViewModel @Inject constructor(
-    private val repository: CampaignRepository
+    userRepo: UserRepository,
+    campaignRepo: CampaignRepository,
+    auth: AuthRepository,
 ) : ViewModel() {
+    val user = auth.getCurrentUser()
 
-    private val _uiState = MutableStateFlow(LandingPageState())
+    private val _uiState: MutableStateFlow<LandingPageState> = MutableStateFlow(LandingPageState())
     val uiState = _uiState.asStateFlow()
 
-    fun loadUpcomingCampaigns(campaignIds: List<String>) {
-        viewModelScope.launch {
-            val campaigns = mutableListOf<CampaignState>()
-            campaignIds.forEach{ campaigns.add(repository.getCampaignDetails(it)) }
-            _uiState.value = _uiState.value.copy(upcomingCampaigns = campaigns)
+    init {
+        user?.let { Log.d("USER ID", it.uid) }
+        if (user != null) {
+            userRepo.fetchUser(user.uid) { userData ->
+                userData?.userUpcomingCampaigns?.let { campaignIds ->
+                    val campaigns = mutableListOf<Campaign>()
+                    var remaining = campaignIds.size
+
+                    campaignIds.forEach { campaignId ->
+                        campaignRepo.fetchCampaign(campaignId) { campaign ->
+                            campaign?.let { campaigns.add(it) }
+                            remaining--
+                            if (remaining == 0) {
+                                _uiState.value = LandingPageState(
+                                    user = userData,
+                                    progress = userData.userExp.toFloat() / 1000,
+                                    upcomingCampaigns = campaigns
+                                )
+                                _uiState.update { it.copy(loading = false) }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

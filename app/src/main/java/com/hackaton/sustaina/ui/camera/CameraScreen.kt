@@ -14,29 +14,32 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -47,7 +50,7 @@ import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import com.hackaton.sustaina.R
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -81,67 +84,88 @@ fun NoPermissionScreen(navController: NavController,
     ) {
         Text(text = "Grant thyself perms!", fontSize = 50.sp)
         Button(onClick = cameraOnRequestPermission, modifier =  Modifier.size(150.dp, 50.dp)) {
-           Text("Camera")
+            Text("Camera")
         }
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
-fun CameraScreen(
-    navController: NavController
-) {
+fun CameraScreen(navController: NavController) {
 
     val imageCapture = remember {
         ImageCapture.Builder().build()
     }
-
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
+    var flashAlpha by remember { mutableStateOf(0f) }
+    val animatedAlpha by animateFloatAsState(
+        targetValue = flashAlpha,
+        animationSpec = tween(durationMillis = 100)
+    )
 
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
+            .padding(bottom = 100.dp)
     ) {
-        val (row, cameraPreviewContainer) = createRefs()
+        val (previewContainer, captureButton) = createRefs()
 
-        Box (
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .constrainAs(cameraPreviewContainer) {
+                .background(MaterialTheme.colorScheme.background)
+                .constrainAs(previewContainer) {
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
                 }
         ) {
-            CameraPreview(imageCapture = imageCapture)
+            Box(
+                modifier = Modifier
+                    .padding(30.dp)
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(30.dp))
+                    .background(MaterialTheme.colorScheme.surface)
+            ) {
+                CameraPreview(imageCapture = imageCapture)
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White.copy(alpha = animatedAlpha))
+                )
+            }
         }
 
-        Row (
+        Box(
+            contentAlignment = Alignment.Center,
             modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(ContextCompat.getColor(LocalContext.current, R.color.translucent_black)))
-                .height(150.dp)
-                .padding(0.dp, 0.dp, 0.dp, 40.dp)
-                .constrainAs(row) {
+                .constrainAs(captureButton) {
                     bottom.linkTo(parent.bottom)
-                },
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
         ) {
-            Box (
+            Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                .clickable { capturePhoto(imageCapture = imageCapture, context = context) }
+                    .offset(y = (-50).dp)
+                    .size(70.dp)
+                    .background(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(100.dp))
+                    .clickable {
+                        capturePhoto(imageCapture = imageCapture, context = context)
+                        coroutineScope.launch {
+                            flashAlpha = 0.8f
+                            delay(50)
+                            flashAlpha = 0f
+                        }
+                    }
             ) {
                 Box(
                     modifier = Modifier
-                        .size(70.dp)
-                        .background(color = Color.White, shape = RoundedCornerShape(100.dp))
-                )
-                Icon(
-                    painter = painterResource(R.drawable.icon_camera),
-                    contentDescription = "Camera Icon",
-                    modifier = Modifier
                         .size(50.dp)
+                        .background(color = Color.White, shape = RoundedCornerShape(100.dp))
                 )
             }
         }

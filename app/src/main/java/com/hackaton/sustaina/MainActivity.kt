@@ -7,7 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
-import com.hackaton.sustaina.ui.navigation.Navigation
+import com.hackaton.sustaina.ui.navigation.MainScreen
 import com.hackaton.sustaina.ui.theme.SustainaTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             SustainaTheme(darkTheme = false) {
-                Navigation()
+                MainScreen()
             }
         }
     }
