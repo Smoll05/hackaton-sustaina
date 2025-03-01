@@ -151,6 +151,7 @@ fun CampaignInfoScreen(navController: NavController, viewModel: CampaignInfoView
             onDismiss = { viewModel.hideJoinCampaignSheet() },
             onConfirm = {
                 Toast.makeText(context, "You have joined this campaign!", Toast.LENGTH_LONG).show()
+                viewModel.joinCampaign()
                 viewModel.hideJoinCampaignSheet()
             }
         )
