@@ -1,5 +1,6 @@
 package com.hackaton.sustaina.ui.map
 
+import android.location.Location
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.AdvancedMarkerOptions
