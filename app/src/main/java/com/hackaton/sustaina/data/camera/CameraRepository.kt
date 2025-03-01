@@ -6,7 +6,7 @@ import javax.inject.Inject
 class CameraRepository @Inject constructor(
     private val cameraDataSource: CameraDataSource
 ) {
-    private var lastImageSaved: File? = null
+    var lastImageSaved: File? = null
 
     fun setLastImageSaved(image: File) {
         lastImageSaved = image
