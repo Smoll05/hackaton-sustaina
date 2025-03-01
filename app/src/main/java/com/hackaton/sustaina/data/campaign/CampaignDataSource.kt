@@ -32,8 +32,8 @@ class CampaignDataSource @Inject constructor(
         campaignRef.get().addOnSuccessListener { snapshot ->
             val campaigns = mutableListOf<Campaign>()
             for (campaignSnapshot in snapshot.children) {
-                val campaignId = campaignSnapshot.key
-                campaignId?.let { campaigns.add(campaignId) }
+                val campaign = campaignSnapshot.getValue(Campaign::class.java)
+                campaign?.let { campaigns.add(campaign) }
             }
             Log.d(TAG, "getCampaigns for all campaigns success!")
             onComplete(campaigns)
