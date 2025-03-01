@@ -28,8 +28,8 @@ class HotspotDataSource @Inject constructor(
         hotspotRef.get().addOnSuccessListener { snapshot ->
             val hotspots = mutableListOf<Hotspot>()
             for (campaignSnapshot in snapshot.children) {
-                val campaignId = campaignSnapshot.key
-                campaignId?.let { hotspots.add(campaignId) }
+                val hotspot = campaignSnapshot.getValue(Hotspot::class.java)
+                hotspot?.let { hotspots.add(hotspot) }
             }
             onComplete(hotspots)
         }
