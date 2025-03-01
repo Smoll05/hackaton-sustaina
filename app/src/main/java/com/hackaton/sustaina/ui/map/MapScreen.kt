@@ -186,18 +186,173 @@ fun MapScreen(navController: NavController, key: Long) {
     }
 }
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
-fun HotspotPopup(hotspot: UserReport, onDismiss: () -> Unit) {
-    AlertDialog(
-        onDismissRequest = { onDismiss() },
-        title = { Text("Garbage Hotspot Alert!") },
-        text = { Text("You're in a hotspot zone:\n\n${hotspot.description}") },
-        confirmButton = {
-            Button(onClick = { onDismiss() }) {
-                Text("OK")
+fun HotspotDetailsBottomSheet(hotspot: UserReport, onClose: () -> Unit) {
+    val hotspotDensity = HotspotDensity.fromLevel(hotspot.density)
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Hotspot Details",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+            IconButton(onClick = onClose) {
+                Icon(Icons.Filled.Close, contentDescription = "Close")
             }
         }
-    )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        LazyColumn {
+            item {
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            text = "Description:",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(text = hotspot.description)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Density:",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(text = hotspotDensity.toString())
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            text = "Location:",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        GoogleMap(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp),
+                            cameraPositionState = rememberCameraPositionState {
+                                position = CameraPosition.fromLatLngZoom(
+                                    LatLng(
+                                        hotspot.latitude,
+                                        hotspot.longitude
+                                    ), 15f
+                                )
+                            },
+                            googleMapOptionsFactory = { GoogleMapOptions().liteMode(true) }
+                        ) {
+                            Marker(
+                                state = MarkerState(
+                                    position = LatLng(
+                                        hotspot.latitude,
+                                        hotspot.longitude
+                                    )
+                                ),
+                                title = "Hotspot Location",
+                                snippet = hotspot.description
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@SuppressLint("UnrememberedMutableState")
+@Composable
+fun CampaignDetailsBottomSheet(campaign: SustainaCampaign, onClose: () -> Unit) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Campaign Details",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+            IconButton(onClick = onClose) {
+                Icon(Icons.Filled.Close, contentDescription = "Close")
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        LazyColumn {
+            item {
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            text = "Name:",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(text = campaign.name)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Description:",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(text = campaign.description)
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            text = "Location:",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        GoogleMap(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp),
+                            cameraPositionState = rememberCameraPositionState {
+                                position = CameraPosition.fromLatLngZoom(
+                                    LatLng(
+                                        campaign.latitude,
+                                        campaign.longitude
+                                    ), 15f
+                                )
+                            },
+                            googleMapOptionsFactory = { GoogleMapOptions().liteMode(true) }
+                        ) {
+                            Marker(
+                                state = MarkerState(
+                                    position = LatLng(
+                                        campaign.latitude,
+                                        campaign.longitude
+                                    )
+                                ),
+                                title = "Hotspot Location",
+                                snippet = campaign.description
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 @SuppressLint("MissingPermission")
