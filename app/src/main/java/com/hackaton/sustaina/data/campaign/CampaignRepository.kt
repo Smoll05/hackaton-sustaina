@@ -22,4 +22,14 @@ class CampaignRepository(
             }
         }
     }
+
+    fun removeUserFromCampaign(campaignId: String, userId: String) {
+        databaseSource.getCampaign(campaignId) { campaign ->
+            if (campaign != null) {
+                val usersList = campaign.campaignAttendingUser.toMutableList()
+                usersList.remove(userId)
+                databaseSource.updateCampaignUsers(campaignId, usersList)
+            }
+        }
+    }
 }
