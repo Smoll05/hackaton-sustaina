@@ -18,7 +18,8 @@ data class MapState(
     val campaigns: List<Campaign> = mutableListOf(),
     val hotspotCircles: MutableMap<Circle, Hotspot> = mutableMapOf(),
     val campaignMarkers: MutableMap<Marker?, Campaign> = mutableMapOf(),
-    val bottomSheetState: Boolean = false,
+    val bottomSheetInspectMapEntryDetails: Boolean = false,
+    val bottomSheetCreateMapEntry: Boolean = false,
     val cameraPosition: CameraPosition = CameraPosition
         .fromLatLngZoom(
             LatLng( // Go to CIT-U
