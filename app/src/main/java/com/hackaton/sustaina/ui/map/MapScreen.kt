@@ -64,7 +64,9 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.hackaton.sustaina.R
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalPermissionsApi::class, MapsComposeExperimentalApi::class)
+@OptIn(ExperimentalPermissionsApi::class, MapsComposeExperimentalApi::class,
+    ExperimentalMaterial3Api::class
+)
 @Composable
 fun MapScreen(navController: NavController, key: Long) {
     val context = LocalContext.current
