@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hackaton.sustaina.data.auth.AuthRepository
 import com.hackaton.sustaina.data.campaign.CampaignRepository
-import com.hackaton.sustaina.domain.usecases.JoinCampaignUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,8 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CampaignInfoViewModel @Inject constructor (
-    repository: CampaignRepository,
-    val useCase: JoinCampaignUseCase,
+    val repository: CampaignRepository,
     val auth: AuthRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -51,7 +49,7 @@ class CampaignInfoViewModel @Inject constructor (
     fun joinCampaign() {
         val user = auth.getCurrentUser()
         if (user != null) {
-            useCase.joinCampaign(user.uid, campaignId)
+            repository.addUserToCampaign(campaignId, user.uid)
         }
     }
 

@@ -12,4 +12,14 @@ class CampaignRepository(
     fun fetchCampaign(campaignId: String, onComplete: (Campaign?) -> Unit) {
         databaseSource.getCampaign(campaignId, onComplete)
     }
+
+    fun addUserToCampaign(campaignId: String, userId: String) {
+        databaseSource.getCampaign(campaignId) { campaign ->
+            if (campaign != null) {
+                val usersList = campaign.campaignAttendingUser.toMutableList()
+                usersList.add(userId)
+                databaseSource.updateCampaignUsers(campaignId, usersList)
+            }
+        }
+    }
 }
