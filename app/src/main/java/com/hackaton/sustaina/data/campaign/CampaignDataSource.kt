@@ -27,4 +27,20 @@ class CampaignDataSource @Inject constructor(
             }
             .addOnFailureListener { onComplete(null) }
     }
+
+    fun getCampaigns(onComplete: (List<Campaign>) -> Unit) {
+        campaignRef.get().addOnSuccessListener { snapshot ->
+            val campaigns = mutableListOf<Campaign>()
+            for (campaignSnapshot in snapshot.children) {
+                val campaignId = campaignSnapshot.key
+                campaignId?.let { campaigns.add(campaignId) }
+            }
+            Log.d(TAG, "getCampaigns for all campaigns success!")
+            onComplete(campaigns)
+        }
+        .addOnFailureListener {
+            Log.e(TAG, "getCampaigns failed!")
+            onComplete(emptyList())
+        }
+    }
 }
