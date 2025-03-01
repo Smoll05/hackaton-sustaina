@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
+import com.hackaton.sustaina.ui.navigation.MainScreen
 import com.hackaton.sustaina.ui.navigation.Navigation
 import com.hackaton.sustaina.ui.theme.SustainaTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,14 +33,5 @@ class MainActivity : ComponentActivity() {
                 MainScreen()
             }
         }
-    }
-}
-
-// Revert back window color to white
-@RequiresApi(Build.VERSION_CODES.Q)
-@Composable
-fun MainScreen() {
-    Box(modifier = Modifier.fillMaxSize().background(color = colorResource(id = R.color.white))) {
-        Navigation()
     }
 }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -11,6 +12,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,6 +20,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.hackaton.sustaina.LoginPage
+import com.hackaton.sustaina.R
 import com.hackaton.sustaina.RegisterPage
 import com.hackaton.sustaina.ui.aboutissue.AboutIssue
 import com.hackaton.sustaina.ui.camera.VerifyCameraPermissions
@@ -35,6 +38,16 @@ sealed class Routes(val route: String) {
     data object AboutIssue : Routes("AboutIssue/{campaignId}")
     data object Profile : Routes("Profile")
 }
+
+// Revert back window color to white
+@RequiresApi(Build.VERSION_CODES.Q)
+@Composable
+fun MainScreen() {
+    Box(modifier = Modifier.fillMaxSize().background(color = colorResource(id = R.color.white))) {
+        Navigation()
+    }
+}
+
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
