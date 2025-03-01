@@ -1,16 +1,12 @@
 package com.hackaton.sustaina.ui.camera
 
-import android.content.ContentValues
 import android.content.Context
 import android.os.Build
-import android.provider.MediaStore
-import android.util.Log
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
@@ -30,9 +26,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -46,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -53,12 +50,9 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.concurrent.Executor
-import java.util.concurrent.Executors
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-lateinit var cameraExecutor: Executor
 @RequiresApi(Build.VERSION_CODES.Q)
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -92,11 +86,18 @@ fun NoPermissionScreen(navController: NavController,
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
-fun CameraScreen(navController: NavController) {
+fun CameraScreen(
+    navController: NavController,
+    cameraViewModel: CameraViewModel = hiltViewModel()
+) {
 
-    val imageCapture = remember {
-        ImageCapture.Builder().build()
+    val cameraState by cameraViewModel.cameraState.collectAsState()
+
+    if (cameraState is CameraState.Success) {
+        navController.popBackStack()
     }
+
+    val imageCapture = remember { ImageCapture.Builder().build() }
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
@@ -155,7 +156,7 @@ fun CameraScreen(navController: NavController) {
                     .size(70.dp)
                     .background(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(100.dp))
                     .clickable {
-                        capturePhoto(imageCapture = imageCapture, context = context)
+                        cameraViewModel.capturePhoto(imageCapture = imageCapture, context = context)
                         coroutineScope.launch {
                             flashAlpha = 0.8f
                             delay(50)
@@ -212,35 +213,4 @@ suspend fun Context.cameraProvider() : ProcessCameraProvider = suspendCoroutine 
     listenableFuture.addListener({
         continuation.resume(listenableFuture.get())
     }, ContextCompat.getMainExecutor(this))
-}
-
-@RequiresApi(Build.VERSION_CODES.Q)
-private fun capturePhoto(imageCapture: ImageCapture, context: Context) {
-    cameraExecutor = Executors.newSingleThreadExecutor()
-    val currentTime = System.currentTimeMillis()
-    val name = "IMG_$currentTime.jpg"
-    val currentTimeSeconds = (currentTime / 1000).toInt()
-
-    val contentValues = ContentValues().apply {
-        put(MediaStore.MediaColumns.DISPLAY_NAME, name)
-        put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-        put(MediaStore.MediaColumns.DATE_TAKEN, currentTimeSeconds)
-        put(MediaStore.MediaColumns.RELATIVE_PATH, "Pictures/Sustaina")
-    }
-
-    val uri = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)!!
-
-    val outputFileOption = ImageCapture.OutputFileOptions.Builder(
-        context.contentResolver, uri, contentValues
-    ).build()
-
-    imageCapture.takePicture(outputFileOption, cameraExecutor, object : ImageCapture.OnImageSavedCallback {
-        override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-            Log.e("Camera", "The saved uri is ${outputFileResults.savedUri}")
-        }
-
-        override fun onError(exception: ImageCaptureException) {
-            Log.e("Camera", "$exception: ${exception.cause}")
-        }
-    })
 }

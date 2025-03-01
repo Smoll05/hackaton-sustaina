@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
@@ -27,14 +27,16 @@ class CameraViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _cameraState : MutableStateFlow<CameraState> = MutableStateFlow(CameraState.Idle)
-    private val cameraExecutor : ExecutorService = Executors.newSingleThreadExecutor()
+    private val cameraExecutor : Executor = Executors.newSingleThreadExecutor()
 
     val cameraState: StateFlow<CameraState> = _cameraState.asStateFlow()
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    private fun capturePhoto(imageCapture: ImageCapture, context: Context) {
+    fun capturePhoto(imageCapture: ImageCapture, context: Context) {
         viewModelScope.launch {
+
             _cameraState.update { CameraState.Loading }
+
             val currentTime = System.currentTimeMillis()
             val currentTimeInSeconds = (currentTime / 1000).toInt()
             val name = "IMG_$currentTime.jpg"
