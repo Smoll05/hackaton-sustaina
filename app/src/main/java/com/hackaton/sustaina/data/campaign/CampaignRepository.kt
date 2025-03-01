@@ -12,4 +12,8 @@ class CampaignRepository(
     fun fetchCampaign(campaignId: String, onComplete: (Campaign?) -> Unit) {
         databaseSource.getCampaign(campaignId, onComplete)
     }
+
+    fun fetchCampaigns(onComplete: (List<Campaign>) -> Unit) {
+        databaseSource.getCampaigns(onComplete)
+    }
 }
