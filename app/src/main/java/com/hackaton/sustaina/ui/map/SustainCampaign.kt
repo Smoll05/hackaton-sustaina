@@ -17,7 +17,8 @@ class SustainaCampaigns {
         SustainaCampaign("event_002", 10.282110, 123.883115, "SEASIDE Tree Planting Activity", "Help plant trees in our community!", 1709060000, "environment"),
         SustainaCampaign("event_003", 10.290376, 123.900082, "CSCR TUNNEL Recycling Workshop", "Learn how to recycle properly.", 1709063200, "education"),
         SustainaCampaign("event_004", 10.293207, 123.905030, "FORT SAN PEDRO Beach Clean-up", "Volunteers needed for beach cleanup.", 1709066400, "campaign"),
-        SustainaCampaign("event_005", 10.299741, 123.896808, "STO NIÑO PARISH Community Composting", "Join us in sustainable waste management.", 1709069600, "sustainability")
+        SustainaCampaign("event_005", 10.299741, 123.896808, "STO NIÑO PARISH Community Composting", "Join us in sustainable waste management.", 1709069600, "sustainability"),
+        SustainaCampaign("event_005", 10.294067, 123.882511, "FATIMA Hotspot", "Join us in sustainable waste management.", 1709069600, "sustainability")
     )
 
     fun allCampaigns(): List<SustainaCampaign> = events
