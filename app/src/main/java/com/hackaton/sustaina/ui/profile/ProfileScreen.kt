@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role.Companion.Button
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -162,7 +165,7 @@ fun ProfilePage(navController: NavController) {
                 }
             }
 
-            Spacer(Modifier.height(70.dp))
+            Spacer(Modifier.height(30.dp))
 
             Box(
                 modifier = Modifier
@@ -202,7 +205,29 @@ fun ProfilePage(navController: NavController) {
                 }
 
             }
+
+            Spacer(Modifier.height(30.dp))
+            Button(
+                onClick = {navController.navigate(Routes.Login.route)},
+                modifier = Modifier
+                    .width(150.dp)
+                    .height(50.dp),
+                shape = RoundedCornerShape(15.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFBE4F4F),
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+            ) {
+                Text(
+                    fontWeight = FontWeight.Bold,
+                    text = "Sign out",
+                )
+            }
+
         }
+
+
 
         Image(
             painter = painterResource(R.drawable.icon_back),
@@ -217,6 +242,8 @@ fun ProfilePage(navController: NavController) {
                     navController.navigate(Routes.Landing.route)
                 }
         )
+
+
 
     }
 }
