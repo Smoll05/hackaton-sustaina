@@ -32,11 +32,17 @@ class CampaignInfoViewModel @Inject constructor (
 
     init {
         viewModelScope.launch {
+            val user = auth.getCurrentUser()
+
             Log.d(TAG, "gonna get details for $campaignId")
             val startTime = System.currentTimeMillis()
 
             campaignRepo.fetchCampaign(campaignId) { campaign ->
                 _uiState.value = campaign?.let { CampaignInfoState(it) }!!
+
+                if (_uiState.value.campaign.campaignAttendingUser.any { it == user?.uid }) {
+                    _uiState.update { it.copy(isUserAttending = true) }
+                }
             }
 
             val elapsedTime = System.currentTimeMillis() - startTime
@@ -53,6 +59,15 @@ class CampaignInfoViewModel @Inject constructor (
         val user = auth.getCurrentUser()
         if (user != null) {
             campaignRepo.addUserToCampaign(campaignId, user.uid)
+            _uiState.update { it.copy(isUserAttending = true) }
+        }
+    }
+
+    fun leaveCampaign() {
+        val user = auth.getCurrentUser()
+        if (user != null) {
+            campaignRepo.removeUserFromCampaign(campaignId, user.uid)
+            _uiState.update { it.copy(isUserAttending = false) }
         }
     }
 

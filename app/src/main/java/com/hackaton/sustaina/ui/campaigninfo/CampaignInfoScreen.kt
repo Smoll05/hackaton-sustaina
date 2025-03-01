@@ -133,7 +133,12 @@ fun CampaignInfoScreen(navController: NavController, viewModel: CampaignInfoView
             onClick = { viewModel.showJoinCampaignSheet() },
             modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
         ) {
-            Text("JOIN CAMPAIGN", fontWeight = FontWeight.Bold)
+            Text(
+                if (uiState.isUserAttending.not()) {
+                    "JOIN CAMPAIGN"
+                } else {
+                    "LEAVE CAMPAIGN"
+            }, fontWeight = FontWeight.Bold)
         }
 
         OutlinedButton(
@@ -150,10 +155,17 @@ fun CampaignInfoScreen(navController: NavController, viewModel: CampaignInfoView
             campaignName = uiState.campaignName,
             onDismiss = { viewModel.hideJoinCampaignSheet() },
             onConfirm = {
-                Toast.makeText(context, "You have joined this campaign!", Toast.LENGTH_LONG).show()
-                viewModel.joinCampaign()
-                viewModel.hideJoinCampaignSheet()
-            }
+                if (uiState.isUserAttending.not()) {
+                    Toast.makeText(context, "You have joined this campaign!", Toast.LENGTH_LONG).show()
+                    viewModel.joinCampaign()
+                    viewModel.hideJoinCampaignSheet()
+                } else {
+                    Toast.makeText(context, "You have left this campaign!", Toast.LENGTH_LONG).show()
+                    viewModel.leaveCampaign()
+                    viewModel.hideJoinCampaignSheet()
+                }
+            },
+            isUserAttending = uiState.isUserAttending
         )
     }
 
@@ -238,17 +250,29 @@ fun CampaignDateLocation(uiState: CampaignInfoState) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun JoinCampaignSheet(sheetState: SheetState, campaignName: String, onDismiss: () -> Unit, onConfirm: () -> Unit) {
+fun JoinCampaignSheet(sheetState: SheetState, campaignName: String, isUserAttending: Boolean, onDismiss: () -> Unit, onConfirm: () -> Unit) {
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("Join Campaign", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            Text(
+                if (isUserAttending.not()) {
+                    "Join Campaign"
+                } else {
+                    "Leave Campaign"
+                },
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold
+            )
 
             Text(
-                text = "Are you sure you want to join $campaignName?",
+                if (!isUserAttending) {
+                    "Are you sure you want to join $campaignName?"
+                } else {
+                    "Are you sure you want to leave $campaignName?"
+                },
                 modifier = Modifier.padding(top = 8.dp)
             )
 
