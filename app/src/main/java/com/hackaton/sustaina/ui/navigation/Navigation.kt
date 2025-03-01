@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Build
 import androidx.activity.compose.BackHandler
-import androidx.annotation.ColorRes
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,7 +18,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -115,7 +113,7 @@ fun SplashScreen(navController: NavController) {
     }
 
     LaunchedEffect(Unit) {
-        delay(2000)
+        delay(1500)
         (context as Activity).window.navigationBarColor = ContextCompat.getColor(context, R.color.white)
         navController.navigate("main") {
             popUpTo("splash") { inclusive = true }
