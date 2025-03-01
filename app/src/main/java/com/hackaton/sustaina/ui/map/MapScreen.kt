@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -183,7 +184,7 @@ fun MapScreen(navController: NavController, key: Long, viewModel: MapViewModel =
                         }
                     }
                 } else if (selectedCampaign != null) {
-                    CampaignDetailsBottomSheet(selectedCampaign!!) {
+                    CampaignDetailsBottomSheet(selectedCampaign!!, navController) {
                         bottomSheetScope.launch { sheetState.hide() }.invokeOnCompletion {
                             if (!sheetState.isVisible) {
                                 viewModel.hideBottomSheet()
@@ -323,6 +324,7 @@ fun HotspotDetailsBottomSheet(hotspot: Hotspot, onClose: () -> Unit) {
                         }
                     }
                 }
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
@@ -330,7 +332,7 @@ fun HotspotDetailsBottomSheet(hotspot: Hotspot, onClose: () -> Unit) {
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun CampaignDetailsBottomSheet(campaign: Campaign, onClose: () -> Unit) {
+fun CampaignDetailsBottomSheet(campaign: Campaign, navController: NavController, onClose: () -> Unit) {
 
     Column(
         modifier = Modifier
@@ -406,6 +408,14 @@ fun CampaignDetailsBottomSheet(campaign: Campaign, onClose: () -> Unit) {
                             )
                         }
                     }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(
+                    onClick = { navController.navigate("AboutIssue/${ campaign.campaignId }") },
+                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
+                ) {
+                    Text("MORE DETAILS", fontWeight = FontWeight.Bold)
                 }
             }
         }
