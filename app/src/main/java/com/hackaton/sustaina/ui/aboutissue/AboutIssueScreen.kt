@@ -91,19 +91,22 @@ fun AboutIssue(navController: NavController, viewModel: AboutIssueViewModel = hi
             modifier = Modifier.padding(top = 8.dp)
         )
 
-        Row(modifier = Modifier
+        Row(horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
             .padding(top = 16.dp)
             .fillMaxWidth()) {
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Row(modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .padding(8.dp)) {
-                Row {
+            Row(horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(8.dp)) {
+                Row(horizontalArrangement = Arrangement.Center) {
                     Image(
                         painter = painterResource(R.drawable.calendar),
                         contentDescription = "",
+                        alignment = Alignment.Center,
                         modifier = Modifier
                             .size(32.dp)
                             .align(Alignment.CenterVertically)
@@ -117,13 +120,6 @@ fun AboutIssue(navController: NavController, viewModel: AboutIssueViewModel = hi
                                 .align(Alignment.CenterVertically)
                         )
                     }
-//                    Text(
-//                        text = uiState.campaignStartDate,
-//                        fontSize = 18.sp,
-//                        modifier = Modifier
-//                            .padding(start = 8.dp)
-//                            .align(Alignment.CenterVertically)
-//                    )
                 }
             }
 
@@ -132,11 +128,15 @@ fun AboutIssue(navController: NavController, viewModel: AboutIssueViewModel = hi
             Row(modifier = Modifier
                 .align(Alignment.CenterVertically)
                 .padding(8.dp)) {
-                Row {
+                Row(horizontalArrangement = Arrangement.Center) {
                     Image(
                         painter = painterResource(R.drawable.location),
                         contentDescription = "",
-                        modifier = Modifier.size(32.dp)
+                        alignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .align(Alignment.CenterVertically)
+
                     )
                     Text(
                         text = uiState.campaignVenue,
@@ -147,8 +147,6 @@ fun AboutIssue(navController: NavController, viewModel: AboutIssueViewModel = hi
                     )
                 }
             }
-
-            Spacer(modifier = Modifier.weight(1f))
         }
 
         HorizontalDivider(

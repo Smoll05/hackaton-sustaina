@@ -6,5 +6,6 @@ import com.hackaton.sustaina.domain.models.User
 data class LandingPageState (
     val user: User = User(),
     val progress: Float = 0f,
-    val upcomingCampaigns: List<Campaign> = listOf()
+    val upcomingCampaigns: List<Campaign> = listOf(),
+    val loading: Boolean = true
 )
