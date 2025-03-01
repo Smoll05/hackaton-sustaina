@@ -23,4 +23,18 @@ class HotspotDataSource @Inject constructor(
             }
             .addOnFailureListener { onComplete(null) }
     }
+
+    fun getHotspots(onComplete: (List<Hotspot>) -> Unit) {
+        hotspotRef.get().addOnSuccessListener { snapshot ->
+            val hotspots = mutableListOf<Hotspot>()
+            for (campaignSnapshot in snapshot.children) {
+                val campaignId = campaignSnapshot.key
+                campaignId?.let { hotspots.add(campaignId) }
+            }
+            onComplete(hotspots)
+        }
+            .addOnFailureListener {
+                onComplete(emptyList())
+            }
+    }
 }
