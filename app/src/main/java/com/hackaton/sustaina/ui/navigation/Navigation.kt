@@ -19,7 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.hackaton.sustaina.LoginPage
 import com.hackaton.sustaina.RegisterPage
-import com.hackaton.sustaina.ui.aboutissue.AboutIssue
+import com.hackaton.sustaina.ui.campaigninfo.CampaignInfoScreen
 import com.hackaton.sustaina.ui.camera.VerifyCameraPermissions
 import com.hackaton.sustaina.ui.landing.LandingPageScreen
 import com.hackaton.sustaina.ui.map.MapScreen
@@ -85,7 +85,7 @@ fun Navigation() {
                     route = Routes.AboutIssue.route,
                     arguments = listOf(navArgument("campaignId") { type = NavType.StringType })
                 ) {
-                    AboutIssue(navController = navController)
+                    CampaignInfoScreen(navController = navController)
                 }
             }
         }
