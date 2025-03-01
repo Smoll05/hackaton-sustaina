@@ -73,7 +73,10 @@ fun LoginPage(
 
     LaunchedEffect(loginState) {
         if (loginState is LoginState.Success) {
-            navController.navigate(Routes.Landing.route)
+            // ensure user cannot go back once logged in
+            navController.navigate(Routes.Landing.route) {
+                popUpTo(Routes.Login.route) { inclusive = true }
+            }
         }
     }
 

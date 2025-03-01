@@ -276,7 +276,10 @@ fun ProfilePage(navController: NavController) {
                                     onClick = {
                                         // ToDo: User logs out from the database
 
-                                        navController.navigate(Routes.Login.route)
+                                        // ensure user cannot go back to profile page once signed out
+                                        navController.navigate(Routes.Login.route) {
+                                            popUpTo(Routes.Landing.route) { inclusive = true }
+                                        }
                                         showDialog = false
                                     },
                                     modifier = Modifier
