@@ -1,6 +1,7 @@
 package com.hackaton.sustaina.ui.map
 
 import android.location.Location
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -26,8 +27,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
-    campaignRepo: CampaignRepository,
-    hotspotRepo: HotspotRepository,
+    private val campaignRepo: CampaignRepository,
+    private val hotspotRepo: HotspotRepository,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<MapState> = MutableStateFlow(MapState())
     val uiState = _uiState.asStateFlow()
@@ -49,6 +50,28 @@ class MapViewModel @Inject constructor(
             addCampaignPins(_uiState.value.campaigns)
 
             _uiState.value = _uiState.value.copy(loading = false)
+        }
+    }
+
+    fun addCampaign(campaign: Campaign) {
+        viewModelScope.launch {
+            campaignRepo.createCampaign(campaign) { success, message ->
+                if(success) {
+                    Log.d("MapViewModel", "addCampaign success: $success, message: $message")
+                }
+                else Log.e("MapViewModel", "addCampaign failed: $success, message: $message")
+            }
+        }
+    }
+
+    fun addHotspot(hotspot: Hotspot) {
+        viewModelScope.launch {
+            hotspotRepo.addNewHotspot(hotspot) { success, message ->
+                if(success) {
+                    Log.d("MapViewModel", "addHotspot success: $success, message: $message")
+                }
+                else Log.e("MapViewModel", "addHotspot failed: $success, message: $message")
+            }
         }
     }
 
@@ -169,10 +192,18 @@ class MapViewModel @Inject constructor(
         return markerOptions
     }
 
-    fun showBottomSheet() {
-        _uiState.update { it.copy(bottomSheetState = true) }
+    fun showBottomSheetCreateMapEntry() {
+        _uiState.update { it.copy(bottomSheetCreateMapEntry = true) }
     }
-    fun hideBottomSheet() {
-        _uiState.update { it.copy(bottomSheetState = false) }
+
+    fun hideBottomSheetCreateMapEntry() {
+        _uiState.update { it.copy(bottomSheetCreateMapEntry = false) }
+    }
+
+    fun showBottomSheetInspectMapEntryDetails() {
+        _uiState.update { it.copy(bottomSheetInspectMapEntryDetails = true) }
+    }
+    fun hideBottomSheetMapEntryDetails() {
+        _uiState.update { it.copy(bottomSheetInspectMapEntryDetails = false) }
     }
 }
