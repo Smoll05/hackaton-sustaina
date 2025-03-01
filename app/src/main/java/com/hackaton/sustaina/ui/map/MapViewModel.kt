@@ -39,12 +39,12 @@ class MapViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             setMapId(R.string.map_id.toString())
-            hotspotRepo.fetchHotspots { hotspots ->
+            hotspotRepo.observeHotspots { hotspots ->
                 _uiState.value = _uiState.value.copy(hotspots = hotspots)
             }
             addHotspotZones(_uiState.value.hotspots)
 
-            campaignRepo.fetchCampaigns { campaigns ->
+            campaignRepo.observeCampaigns { campaigns ->
                 _uiState.value = _uiState.value.copy(campaigns = campaigns)
             }
             addCampaignPins(_uiState.value.campaigns)
@@ -62,6 +62,9 @@ class MapViewModel @Inject constructor(
                 else Log.e("MapViewModel", "addCampaign failed: $success, message: $message")
             }
         }
+        val markerOptions = createPin(campaign)
+        val marker = _uiState.value.googleMap.value?.addMarker(markerOptions)
+        _uiState.value.campaignMarkers[marker] = campaign
     }
 
     fun addHotspot(hotspot: Hotspot) {
@@ -73,6 +76,9 @@ class MapViewModel @Inject constructor(
                 else Log.e("MapViewModel", "addHotspot failed: $success, message: $message")
             }
         }
+        val circle = createCircle(hotspot)
+        val circleOption = _uiState.value.googleMap.value!!.addCircle(circle)
+        _uiState.value.hotspotCircles[circleOption] = hotspot
     }
 
     fun setGoogleMap(googleMap: GoogleMap) {
