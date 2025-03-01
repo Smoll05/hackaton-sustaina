@@ -6,6 +6,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import com.hackaton.sustaina.ui.navigation.Navigation
@@ -23,8 +29,17 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             SustainaTheme(darkTheme = false) {
-                Navigation()
+                MainScreen()
             }
         }
+    }
+}
+
+// Revert back window color to white
+@RequiresApi(Build.VERSION_CODES.Q)
+@Composable
+fun MainScreen() {
+    Box(modifier = Modifier.fillMaxSize().background(color = colorResource(id = R.color.white))) {
+        Navigation()
     }
 }
