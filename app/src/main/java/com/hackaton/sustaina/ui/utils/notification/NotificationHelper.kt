@@ -34,7 +34,7 @@ class NotificationHelper(private val context: Context) {
     @SuppressLint("MissingPermission")
     fun sendHotspotNotification(hotspotName: String) {
         val notification = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.drawable.icon_landing)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle("Garbage Hotspot Alert!")
             .setContentText("You're in a hotspot zone: $hotspotName")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
