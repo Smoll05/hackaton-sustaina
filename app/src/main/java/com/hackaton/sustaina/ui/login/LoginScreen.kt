@@ -74,7 +74,9 @@ fun LoginPage(
 
     LaunchedEffect(loginState) {
         if (loginState is LoginState.Success) {
-            navController.navigate(Routes.Landing.route)
+            navController.navigate(Routes.Landing.route) {
+                popUpTo(Routes.Login.route) { inclusive = true }
+            }
         }
     }
 

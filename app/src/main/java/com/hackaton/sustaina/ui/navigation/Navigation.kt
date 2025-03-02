@@ -43,7 +43,7 @@ import com.hackaton.sustaina.ui.campaigninfo.CampaignInfoScreen
 import com.hackaton.sustaina.ui.camera.VerifyCameraPermissions
 import com.hackaton.sustaina.ui.landing.LandingPageScreen
 import com.hackaton.sustaina.ui.map.MapScreen
-import com.hackaton.sustaina.ui.profile.ProfileScreen
+import com.hackaton.sustaina.ui.profile.ProfilePage
 import kotlinx.coroutines.delay
 
 sealed class Routes(val route: String) {
@@ -162,7 +162,7 @@ fun Navigation() {
                 // Other Screens
                 composable(Routes.Login.route) { LoginPage(navController = navController) }
                 composable(Routes.Register.route) { RegisterPage(navController = navController) }
-                composable(Routes.Profile.route) { ProfileScreen(navController = navController) }
+                composable(Routes.Profile.route) { ProfilePage(navController = navController) }
 
                 composable(
                     route = Routes.AboutIssue.route,
