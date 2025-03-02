@@ -4,6 +4,7 @@ import com.hackaton.sustaina.domain.models.Campaign
 
 data class CampaignInfoState(
     val campaign: Campaign = Campaign(),
+    val isUserAttending: Boolean = false,
     val loading: Boolean = true,
     val showJoinCampaignSheet: Boolean = false,
     val showOfferSolutionSheet: Boolean = false

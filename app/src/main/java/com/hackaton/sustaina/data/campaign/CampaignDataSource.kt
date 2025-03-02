@@ -27,4 +27,8 @@ class CampaignDataSource @Inject constructor(
             }
             .addOnFailureListener { onComplete(null) }
     }
+
+    fun updateCampaignUsers(campaignId: String, userIds: List<String>) {
+        campaignRef.child(campaignId).child("campaignAttendingUser").setValue(userIds)
+    }
 }
