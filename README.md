@@ -42,7 +42,7 @@ By spreading awareness and fostering collaboration, we aim to drive global parti
 | Backend | Firebase |
 | Authentication | Firebase Auth |
 | AI Object Detection | Tentative: Firebase ML |
-| Prototyping | Figma |
+| Prototyping & UI Design | Figma |
 
 ---
 ### UP Cebu Hackathon 2025 - Sustainability Theme
