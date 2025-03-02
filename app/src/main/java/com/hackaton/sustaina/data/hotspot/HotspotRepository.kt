@@ -13,4 +13,12 @@ class HotspotRepository @Inject constructor(
     fun fetchHotspot(hotspotId: String, onComplete: (Hotspot?) -> Unit) {
         dataSource.getHotspot(hotspotId, onComplete)
     }
+
+    fun fetchHotspots(onComplete: (List<Hotspot>) -> Unit) {
+        dataSource.getHotspots(onComplete)
+    }
+
+    fun observeHotspots(onComplete: (List<Hotspot>) -> Unit) {
+        dataSource.observeHotspots(onComplete)
+    }
 }

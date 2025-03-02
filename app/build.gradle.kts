@@ -9,6 +9,21 @@ plugins {
     // Dependency Injection With Hilt
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+
+    // Google Maps SDK
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+}
+
+secrets {
+    // To add your Maps API key to this project:
+    // 1. If the secrets.properties file does not exist, create it in the same folder as the local.properties file.
+    // 2. Add this line, where YOUR_API_KEY is your API key:
+    //        MAPS_API_KEY=YOUR_API_KEY
+    propertiesFileName = "secrets.properties"
+
+    // A properties file containing default secret values. This file can be
+    // checked in version control.
+    defaultPropertiesFileName = "local.defaults.properties"
 }
 
 android {
@@ -65,6 +80,7 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.firebase.database)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.firebase.database.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -100,6 +116,20 @@ dependencies {
     implementation("androidx.camera:camera-view:1.4.1")
     implementation("androidx.camera:camera-extensions:1.4.1")
     implementation("com.google.accompanist:accompanist-permissions:0.37.2")
+
+    // Google Maps SDK
+    implementation("com.google.maps.android:maps-compose:6.4.1")
+    implementation("com.google.maps.android:maps-ktx:5.1.1")
+
+    // Permissions Helper for Jetpack Compose
+    implementation("com.google.accompanist:accompanist-permissions:0.32.0")
+
+    // Fused Location API; obtain current location of user
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    // Background location when app is not active screen // NOT IMPLEMENTED
+//    implementation("androidx.work:work-runtime-ktx:2.10.0")
+
 }
 
 kapt {

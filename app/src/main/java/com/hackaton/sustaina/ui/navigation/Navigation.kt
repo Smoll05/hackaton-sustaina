@@ -51,6 +51,7 @@ sealed class Routes(val route: String) {
     data object Login : Routes("Login")
     data object Register : Routes("Register")
     data object Camera : Routes("Camera")
+    data object SignOut : Routes("Sign Out")
     data object Map : Routes("Map")
     data object AboutIssue : Routes("AboutIssue/{campaignId}")
     data object Profile : Routes("Profile")
@@ -150,9 +151,13 @@ fun Navigation() {
                     BackHandler { /* do nothing */ }
                     LandingPageScreen(navController = navController)
                 }
-
-                composable(Routes.Camera.route) { VerifyCameraPermissions(navController = navController) }
-                composable(Routes.Map.route) { MapScreen(navController = navController) }
+                composable(Routes.Camera.route) {
+                    VerifyCameraPermissions(navController = navController)
+                }
+                composable(Routes.Map.route) {
+                    val key = System.currentTimeMillis()
+                    MapScreen(navController = navController, key)
+                }
 
                 // Other Screens
                 composable(Routes.Login.route) { LoginPage(navController = navController) }

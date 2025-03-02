@@ -1,7 +1,10 @@
 package com.hackaton.sustaina.data.campaign
 
 import android.util.Log
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.hackaton.sustaina.domain.models.Campaign
 import javax.inject.Inject
 
@@ -26,6 +29,38 @@ class CampaignDataSource @Inject constructor(
                 onComplete(campaign)
             }
             .addOnFailureListener { onComplete(null) }
+    }
+
+    fun getCampaigns(onComplete: (List<Campaign>) -> Unit) {
+        campaignRef.get().addOnSuccessListener { snapshot ->
+            val campaigns = mutableListOf<Campaign>()
+            for (campaignSnapshot in snapshot.children) {
+                val campaign = campaignSnapshot.getValue(Campaign::class.java)
+                campaign?.let { campaigns.add(campaign) }
+            }
+            Log.d(TAG, "getCampaigns for all campaigns success!")
+            onComplete(campaigns)
+        }
+        .addOnFailureListener {
+            Log.e(TAG, "getCampaigns failed!")
+            onComplete(emptyList())
+        }
+    }
+
+    fun observeCampaigns(onComplete: (List<Campaign>) -> Unit) {
+        campaignRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val campaigns = mutableListOf<Campaign>()
+                for (campaignSnapshot in snapshot.children) {
+                    val campaign = campaignSnapshot.getValue(Campaign::class.java)
+                    campaign?.let { campaigns.add(campaign) }
+                }
+                onComplete(campaigns)
+            }
+            override fun onCancelled(error: DatabaseError) {
+                onComplete(emptyList())
+            }
+        })
     }
 
     fun updateCampaignUsers(campaignId: String, userIds: List<String>) {

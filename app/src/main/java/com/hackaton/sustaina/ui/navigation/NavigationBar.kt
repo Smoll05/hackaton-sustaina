@@ -81,7 +81,12 @@ fun BottomNavigationBar(navController: NavController) {
                         selected = currentRoute == destination.route,
                         onClick = {
                             navController.navigate(destination.route) {
-                                popUpTo(navController.graph.startDestinationId) {
+                                if(destination.route == Routes.Map.route) {
+                                    popUpTo(navController.graph.startDestinationId)
+                                    { inclusive = true }
+                                    launchSingleTop = true
+                                }
+                                else popUpTo(navController.graph.startDestinationId) {
                                     saveState = true
                                 }
                                 launchSingleTop = true

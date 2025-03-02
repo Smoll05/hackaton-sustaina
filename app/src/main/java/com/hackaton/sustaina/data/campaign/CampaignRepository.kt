@@ -13,6 +13,14 @@ class CampaignRepository(
         databaseSource.getCampaign(campaignId, onComplete)
     }
 
+    fun fetchCampaigns(onComplete: (List<Campaign>) -> Unit) {
+        databaseSource.getCampaigns(onComplete)
+    }
+
+    fun observeCampaigns(onComplete: (List<Campaign>) -> Unit) {
+        databaseSource.observeCampaigns(onComplete)
+    }
+
     fun addUserToCampaign(campaignId: String, userId: String) {
         databaseSource.getCampaign(campaignId) { campaign ->
             if (campaign != null) {
