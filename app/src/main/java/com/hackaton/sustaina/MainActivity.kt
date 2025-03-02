@@ -17,8 +17,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, true)
-
-        window.navigationBarColor = ContextCompat.getColor(this, R.color.off_grey)
+//        window.navigationBarColor = ContextCompat.getColor(this, R.color.off_grey)
 
         setContent {
             SustainaTheme(darkTheme = false) {

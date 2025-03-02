@@ -62,4 +62,8 @@ class CampaignDataSource @Inject constructor(
             }
         })
     }
+
+    fun updateCampaignUsers(campaignId: String, userIds: List<String>) {
+        campaignRef.child(campaignId).child("campaignAttendingUser").setValue(userIds)
+    }
 }

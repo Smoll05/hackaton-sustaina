@@ -4,7 +4,12 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hackaton.sustaina.data.auth.AuthRepository
 import com.hackaton.sustaina.data.campaign.CampaignRepository
+import com.hackaton.sustaina.data.solution.SolutionRepository
+import com.hackaton.sustaina.domain.models.Solution
+import com.hackaton.sustaina.domain.usecases.JoinCampaignUseCase
+import com.hackaton.sustaina.domain.usecases.LeaveCampaignUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +20,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CampaignInfoViewModel @Inject constructor (
-    repository: CampaignRepository,
+    private val campaignRepo: CampaignRepository,
+    private val solutionRepo: SolutionRepository,
+    private val joinCampaignUseCase: JoinCampaignUseCase,
+    private val leaveCampaignUseCase: LeaveCampaignUseCase,
+    val auth: AuthRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -27,11 +36,17 @@ class CampaignInfoViewModel @Inject constructor (
 
     init {
         viewModelScope.launch {
+            val user = auth.getCurrentUser()
+
             Log.d(TAG, "gonna get details for $campaignId")
             val startTime = System.currentTimeMillis()
 
-            repository.fetchCampaign(campaignId) { campaign ->
+            campaignRepo.fetchCampaign(campaignId) { campaign ->
                 _uiState.value = campaign?.let { CampaignInfoState(it) }!!
+
+                if (_uiState.value.campaign.campaignAttendingUser.any { it == user?.uid }) {
+                    _uiState.update { it.copy(isUserAttending = true) }
+                }
             }
 
             val elapsedTime = System.currentTimeMillis() - startTime
@@ -41,6 +56,31 @@ class CampaignInfoViewModel @Inject constructor (
                 delay(remainingTime)
             }
             _uiState.update { it.copy(loading = false) }
+        }
+    }
+
+    fun joinCampaign() {
+        val user = auth.getCurrentUser()
+        if (user != null) {
+            joinCampaignUseCase.joinCampaign(user.uid, campaignId)
+            _uiState.update { it.copy(isUserAttending = true) }
+        }
+    }
+
+    fun leaveCampaign() {
+        val user = auth.getCurrentUser()
+        if (user != null) {
+            leaveCampaignUseCase.leaveCampaign(user.uid, campaignId)
+            _uiState.update { it.copy(isUserAttending = false) }
+        }
+    }
+
+    fun submitSolution(submission: String, onComplete: (Boolean, String?) -> Unit) {
+        val user = auth.getCurrentUser()
+        if (user != null) {
+            val solution =
+                Solution(userId = user.uid, campaignId = campaignId, submission = submission)
+            solutionRepo.addSolution(solution, onComplete)
         }
     }
 

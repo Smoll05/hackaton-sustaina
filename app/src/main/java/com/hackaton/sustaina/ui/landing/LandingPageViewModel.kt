@@ -31,6 +31,15 @@ class LandingPageViewModel @Inject constructor(
                     val campaigns = mutableListOf<Campaign>()
                     var remaining = campaignIds.size
 
+                    if (remaining == 0) {
+                        _uiState.value = LandingPageState(
+                            user = userData,
+                            progress = userData.userExp.toFloat() / 1000,
+                            upcomingCampaigns = campaigns
+                        )
+                        _uiState.update { it.copy(loading = false) }
+                    }
+
                     campaignIds.forEach { campaignId ->
                         campaignRepo.fetchCampaign(campaignId) { campaign ->
                             campaign?.let { campaigns.add(it) }

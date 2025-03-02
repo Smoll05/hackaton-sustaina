@@ -35,5 +35,9 @@ class UserDataSource @Inject constructor(
             }
             .addOnFailureListener { onComplete(null) }
     }
+
+    fun updateCampaignUsers(userId: String, campaignsList: List<String>) {
+        usersRef.child(userId).child("userUpcomingCampaigns").setValue(campaignsList)
+    }
 }
 
