@@ -1,5 +1,6 @@
 package com.hackaton.sustaina.ui.profile
 
+import android.annotation.SuppressLint
 import android.icu.text.NumberFormat
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -38,6 +39,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -50,32 +52,35 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
+import com.hackaton.sustaina.ui.campaigninfo.CampaignInfoState
 import com.hackaton.sustaina.ui.loadingscreen.LoadingScreen
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import java.util.Locale
+import kotlin.random.Random
 
+@SuppressLint("DiscouragedApi")
 @Composable
 fun ProfilePage(navController: NavController,
                 profileViewModel: ProfileViewModel = hiltViewModel()) {
-    // Todo: Implement user data retrieval in here, temporary variables for now
-    val userName = "John Doe"
-    val userId = "12345678"
-    val email = "johndoe@gmail.com"
-    val campaigns = 123
-    val experience = 12300
-    val level = 10
+
+    val uiState by profileViewModel.uiState.collectAsState()
+
+    val userName = uiState.userName
+    val userId = uiState.userId
+    val email = uiState.email
+    val campaigns = uiState.joinedCampaigns.size-1
+    val experience = uiState.currentExp
+    val level = uiState.level
+
+    val context = LocalContext.current
+    val userProfile = uiState.profilePicUrl ?: "profile_1"
+    val resourceId = context.resources.getIdentifier(userProfile, "drawable", context.packageName)
+
+        // ToDo: How to fetch images that user have taken
     val images = listOf("")
 
-    val logoutState by profileViewModel.logoutState.collectAsState()
-
-    LaunchedEffect(logoutState) {
-        if (logoutState is ProfileViewModel.LogoutState.Success) {
-            navController.navigate(Routes.Login.route) {
-                popUpTo(Routes.Landing.route) { inclusive = true }
-            }
-        }
-    }
-
-    if (logoutState is ProfileViewModel.LogoutState.Loading) {
+    if (uiState.loading) {
         LoadingScreen()
         return
     }
@@ -113,7 +118,7 @@ fun ProfilePage(navController: NavController,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Image(
-                painter = painterResource(R.drawable.placeholder),
+                painter = painterResource(resourceId),
                 contentDescription = "Profile Picture",
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
@@ -352,4 +357,9 @@ fun ProfilePage(navController: NavController,
 @Composable
 fun PreviewProfilePage() {
     ProfilePage(navController = rememberNavController())
+}
+
+private fun getRandomProfilePicture(): String {
+    val profileNumber = Random.nextInt(1, 6)
+    return "profile_$profileNumber"
 }
