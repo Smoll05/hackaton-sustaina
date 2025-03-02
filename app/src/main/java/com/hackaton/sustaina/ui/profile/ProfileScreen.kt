@@ -26,7 +26,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,10 +51,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
-import com.hackaton.sustaina.ui.campaigninfo.CampaignInfoState
 import com.hackaton.sustaina.ui.loadingscreen.LoadingScreen
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import java.util.Locale
 import kotlin.random.Random
 
@@ -77,7 +73,7 @@ fun ProfilePage(navController: NavController,
     val userProfile = uiState.profilePicUrl ?: "profile_1"
     val resourceId = context.resources.getIdentifier(userProfile, "drawable", context.packageName)
 
-        // ToDo: How to fetch images that user have taken
+    // ToDo: How to fetch images that user have taken
     val images = listOf("")
 
     if (uiState.loading) {
@@ -223,6 +219,7 @@ fun ProfilePage(navController: NavController,
                         modifier = Modifier.clip(RoundedCornerShape(12.dp)),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
+                        // ToDo: Fetch user's images
                         // Currently hardcoded
                         items(5) { index ->
                             Image(
