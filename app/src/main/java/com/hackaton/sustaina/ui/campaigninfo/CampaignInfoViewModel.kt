@@ -8,6 +8,8 @@ import com.hackaton.sustaina.data.auth.AuthRepository
 import com.hackaton.sustaina.data.campaign.CampaignRepository
 import com.hackaton.sustaina.data.solution.SolutionRepository
 import com.hackaton.sustaina.domain.models.Solution
+import com.hackaton.sustaina.domain.usecases.JoinCampaignUseCase
+import com.hackaton.sustaina.domain.usecases.LeaveCampaignUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,8 +20,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CampaignInfoViewModel @Inject constructor (
-    val campaignRepo: CampaignRepository,
-    val solutionRepo: SolutionRepository,
+    private val campaignRepo: CampaignRepository,
+    private val solutionRepo: SolutionRepository,
+    private val joinCampaignUseCase: JoinCampaignUseCase,
+    private val leaveCampaignUseCase: LeaveCampaignUseCase,
     val auth: AuthRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -58,7 +62,7 @@ class CampaignInfoViewModel @Inject constructor (
     fun joinCampaign() {
         val user = auth.getCurrentUser()
         if (user != null) {
-            campaignRepo.addUserToCampaign(campaignId, user.uid)
+            joinCampaignUseCase.joinCampaign(user.uid, campaignId)
             _uiState.update { it.copy(isUserAttending = true) }
         }
     }
@@ -66,7 +70,7 @@ class CampaignInfoViewModel @Inject constructor (
     fun leaveCampaign() {
         val user = auth.getCurrentUser()
         if (user != null) {
-            campaignRepo.removeUserFromCampaign(campaignId, user.uid)
+            leaveCampaignUseCase.leaveCampaign(user.uid, campaignId)
             _uiState.update { it.copy(isUserAttending = false) }
         }
     }

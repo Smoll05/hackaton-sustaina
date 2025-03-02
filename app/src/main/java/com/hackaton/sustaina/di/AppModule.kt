@@ -14,6 +14,8 @@ import com.hackaton.sustaina.data.solution.SolutionDataSource
 import com.hackaton.sustaina.data.solution.SolutionRepository
 import com.hackaton.sustaina.data.user.UserDataSource
 import com.hackaton.sustaina.data.user.UserRepository
+import com.hackaton.sustaina.domain.usecases.JoinCampaignUseCase
+import com.hackaton.sustaina.domain.usecases.LeaveCampaignUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -60,5 +62,23 @@ object AppModule {
     @Singleton
     fun provideSolutionRepository(): SolutionRepository {
         return SolutionRepository(SolutionDataSource(provideFirebaseDatabase()))
+    }
+
+    @Provides
+    @Singleton
+    fun provideJoinCampaignUseCase(
+        campaignRepository: CampaignRepository,
+        userRepository: UserRepository
+    ): JoinCampaignUseCase {
+        return JoinCampaignUseCase(campaignRepository, userRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLeaveCampaignUseCase(
+        campaignRepository: CampaignRepository,
+        userRepository: UserRepository
+    ): LeaveCampaignUseCase {
+        return LeaveCampaignUseCase(userRepository, campaignRepository)
     }
 }
