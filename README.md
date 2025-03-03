@@ -2,7 +2,7 @@
 
 # Sustaina
 
-## Short Description
+## Brief Description
 
 Sustaina is a real-time platform that leverages AI to crowdsource and visualize environmental issues. Through gamification, it fosters community engagement by rewarding users for reporting and resolving sustainability challenges, driving collective action for a greener future.
 
