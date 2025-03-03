@@ -1,5 +1,6 @@
 package com.hackaton.sustaina.ui.landing
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -165,6 +166,7 @@ fun LandingPageScreen(navController: NavController, viewModel: LandingPageViewMo
 
 @Composable
 fun UpcomingCampaign(campaignId: String, name: String, date: LocalDateTime, navController: NavController) {
+    Log.d("Upcoming Campaign ID", campaignId)
     val formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy hh:mm a")
     ElevatedCard(modifier = Modifier
         .fillMaxWidth()
