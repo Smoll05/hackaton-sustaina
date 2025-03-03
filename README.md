@@ -54,6 +54,6 @@ By spreading awareness and fostering collaboration, we aim to drive global parti
 
 ### Members:
 - James Ewican
-- Carl Phoenix Cornilla
+- Karl Phoenix Cornilla
 - Rafael Mendoza
 - Clark Modequillo
