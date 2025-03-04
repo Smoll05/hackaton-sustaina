@@ -41,6 +41,7 @@ class LandingPageViewModel @Inject constructor(
                     }
 
                     campaignIds.forEach { campaignId ->
+                        Log.d("User Campaign ID", campaignId)
                         campaignRepo.fetchCampaign(campaignId) { campaign ->
                             campaign?.let { campaigns.add(it) }
                             remaining--
