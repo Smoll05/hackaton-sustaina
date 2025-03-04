@@ -67,7 +67,7 @@ fun RegisterPage(
 
     LaunchedEffect(registerState) {
         if (registerState is RegisterState.Success) {
-            navController.navigate(Routes.Landing.route)
+            navController.navigate(Routes.Login.route)
         }
     }
 

@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.hackaton.sustaina.ui.theme.LeafyGreen
 import com.hackaton.sustaina.ui.theme.SustainaTheme
 
 @Composable
@@ -59,7 +60,7 @@ fun LoadingScreen() {
                         modifier = Modifier
                             .size(80.dp)
                             .padding(all = 12.dp),
-                        color = Color.White,
+                        color = LeafyGreen,
                         strokeWidth = 5.dp
                     )
                 }

@@ -39,17 +39,21 @@ import androidx.navigation.navArgument
 import com.hackaton.sustaina.LoginPage
 import com.hackaton.sustaina.R
 import com.hackaton.sustaina.RegisterPage
-import com.hackaton.sustaina.ui.campaigninfo.CampaignInfoScreen
 import com.hackaton.sustaina.ui.camera.VerifyCameraPermissions
+import com.hackaton.sustaina.ui.campaigninfo.CampaignInfoScreen
 import com.hackaton.sustaina.ui.landing.LandingPageScreen
 import com.hackaton.sustaina.ui.map.MapScreen
+import com.hackaton.sustaina.ui.onboarding.OnboardingScreenDetails
+import com.hackaton.sustaina.ui.onboarding.OnboardingScreenWelcome
 import com.hackaton.sustaina.ui.profile.ProfilePage
 import kotlinx.coroutines.delay
 
 sealed class Routes(val route: String) {
-    data object Landing : Routes("Landing")
     data object Login : Routes("Login")
     data object Register : Routes("Register")
+    data object Onboarding : Routes("Onboarding")
+    data object OnboardingDetails : Routes("OnboardingDetails")
+    data object Landing : Routes("Landing")
     data object Camera : Routes("Camera")
     data object SignOut : Routes("Sign Out")
     data object Map : Routes("Map")
@@ -162,6 +166,8 @@ fun Navigation() {
                 // Other Screens
                 composable(Routes.Login.route) { LoginPage(navController = navController) }
                 composable(Routes.Register.route) { RegisterPage(navController = navController) }
+                composable(Routes.Onboarding.route) { OnboardingScreenWelcome(navController = navController) }
+                composable(Routes.OnboardingDetails.route) { OnboardingScreenDetails(navController = navController) }
                 composable(Routes.Profile.route) { ProfilePage(navController = navController) }
 
                 composable(
