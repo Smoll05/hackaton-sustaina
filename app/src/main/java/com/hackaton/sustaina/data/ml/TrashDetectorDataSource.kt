@@ -212,17 +212,11 @@ class TrashDetectorDataSource (
     fun detectTrash() {
         val model = TrashDetectorFloat32.newInstance(context)
 
-// Creates inputs for reference.
         val bitMap = BitmapFactory.decodeFile("drawable/trash.jpg")
         val image = TensorImage.fromBitmap(bitMap)
 
-// Runs model inference and gets result.
         val outputs = model.process(image)
         val output = outputs.outputAsCategoryList
-
-
-
-// Releases model resources if no longer used.
 
         model.close()
 
