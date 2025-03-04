@@ -29,7 +29,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CameraViewModel @Inject constructor(
     private val cameraRepository: CameraRepository,
-//    private val trashDetectorRepository: TrashDetectorRepository
+    private val trashDetectorRepository: TrashDetectorRepository
 ) : ViewModel() {
 
     private val _cameraState : MutableStateFlow<CameraState> = MutableStateFlow(CameraState.Idle)
@@ -62,40 +62,24 @@ class CameraViewModel @Inject constructor(
                 context.contentResolver, uri, contentValues
             ).build()
 
-//            imageCapture.takePicture(
-//                outputFileOption,
-//                cameraExecutor,
-//                object : ImageCapture.OnImageSavedCallback {
-//                    override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-//                        val outputUri = outputFileResults.savedUri
-//                        Log.e("Camera", "The saved uri is $outputUri")
-//
-//                        _cameraState.update { CameraState.Success(outputUri?.toFile()) }
-//
-//                        outputUri?.toFile()?.let {
-//                            cameraRepository.lastImageSaved = it
-//                        }
-//
-//                        Log.d("MLModel", "I was here")
-//                        val bitmap = getBitMapFromUri(context, uri)
-//                        trashDetectorRepository.analyzeImage(bitmap)
-//                   }
-//
-//                    override fun onError(exception: ImageCaptureException) {
-//                        Log.e("Camera", "$exception: ${exception.cause}")
-//                        _cameraState.update { CameraState.Error(exception.message) }
-//                    }
-//                })
-
             imageCapture.takePicture(
                 outputFileOption,
                 cameraExecutor,
                 object : ImageCapture.OnImageSavedCallback {
                     override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                        Log.e("Camera", "The saved uri is ${outputFileResults.savedUri}")
-                        _cameraState.update { CameraState.Success(outputFileResults.savedUri?.toFile()) }
-                        outputFileResults.savedUri?.toFile()
-                            ?.let { cameraRepository.lastImageSaved = it }
+                        val outputUri = outputFileResults.savedUri
+                        Log.e("Camera", "The saved uri is $outputUri")
+
+                        outputUri?.let {
+                            val inputStream = context.contentResolver.openInputStream(it)
+                            val bitmap = BitmapFactory.decodeStream(inputStream)
+
+                            _cameraState.update { CameraState.Success(bitmap) }
+                            cameraRepository.lastBitmapSaved = bitmap
+
+                            Log.d("MLModel", "I was here")
+                            trashDetectorRepository.analyzeImage(bitmap)
+                        }
                     }
 
                     override fun onError(exception: ImageCaptureException) {
@@ -104,11 +88,5 @@ class CameraViewModel @Inject constructor(
                     }
                 })
         }
-    }
-
-    private fun getBitMapFromUri(context: Context, uri: Uri) : Bitmap {
-        return context.contentResolver.openInputStream(uri)?.use { inputStream ->
-            BitmapFactory.decodeStream(inputStream)
-        } ?: throw IllegalArgumentException("Failed to decode Bitmap from URI")
     }
 }

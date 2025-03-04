@@ -138,6 +138,10 @@ dependencies {
     // Background location when app is not active screen // NOT IMPLEMENTED
 //    implementation("androidx.work:work-runtime-ktx:2.10.0")
 
+    // API
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+
 }
 
 kapt {
