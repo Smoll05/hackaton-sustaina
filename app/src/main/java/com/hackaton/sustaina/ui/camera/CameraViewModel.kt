@@ -86,10 +86,9 @@ class CameraViewModel @Inject constructor(
                         outputUri?.let {
                             val file = uriToFile(it, context)
 
-//                            _cameraState.update { CameraState.Success(bitmap) }
-//                            cameraRepository.lastBitmapSaved = bitmap
+                            _cameraState.update { CameraState.Success(file) }
+                            cameraRepository.lastFileSaved = file
 
-                            Log.d("MLModel", "I was here")
                             if (file != null) {
                                 Log.d("API", "Image file created at: ${file.absolutePath}")
 

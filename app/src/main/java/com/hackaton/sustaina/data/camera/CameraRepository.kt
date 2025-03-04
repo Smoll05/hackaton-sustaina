@@ -7,5 +7,5 @@ import javax.inject.Inject
 class CameraRepository @Inject constructor(
     private val cameraDataSource: CameraDataSource
 ) {
-    var lastBitmapSaved: Bitmap? = null
+    var lastFileSaved: File? = null
 }
