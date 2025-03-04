@@ -14,6 +14,7 @@ import androidx.camera.core.ImageCaptureException
 import androidx.core.net.toFile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hackaton.sustaina.data.api.RetrofitClient
 import com.hackaton.sustaina.data.camera.CameraRepository
 import com.hackaton.sustaina.data.ml.TrashDetectorRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,6 +26,18 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import javax.inject.Inject
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.ResponseBody
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 
 @HiltViewModel
 class CameraViewModel @Inject constructor(
@@ -71,14 +84,19 @@ class CameraViewModel @Inject constructor(
                         Log.e("Camera", "The saved uri is $outputUri")
 
                         outputUri?.let {
-                            val inputStream = context.contentResolver.openInputStream(it)
-                            val bitmap = BitmapFactory.decodeStream(inputStream)
+                            val file = uriToFile(it, context)
 
-                            _cameraState.update { CameraState.Success(bitmap) }
-                            cameraRepository.lastBitmapSaved = bitmap
+//                            _cameraState.update { CameraState.Success(bitmap) }
+//                            cameraRepository.lastBitmapSaved = bitmap
 
                             Log.d("MLModel", "I was here")
-                            trashDetectorRepository.analyzeImage(bitmap)
+                            if (file != null) {
+                                Log.d("API", "Image file created at: ${file.absolutePath}")
+
+                                uploadImage(file)
+                            } else {
+                                Log.e("API", "Failed to get image file")
+                            }
                         }
                     }
 
@@ -88,5 +106,63 @@ class CameraViewModel @Inject constructor(
                     }
                 })
         }
+    }
+
+    fun uploadImage(file: File) {
+        val requestFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+        val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
+
+        val apiService = RetrofitClient.instance
+        val call = apiService.uploadImage(body)
+
+        call.enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+                    val responseString = response.body()?.string()
+                    Log.d("API_RESPONSE", responseString.orEmpty())
+
+                    val detections = parseDetections(responseString)
+                    Log.d("Detections", detections.toString())
+                } else {
+                    Log.e("API_ERROR", "Response not successful: ${response.errorBody()?.string()}")
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Log.e("API_ERROR", "Request failed: ${t.message}")
+            }
+        })
+    }
+
+
+    private fun uriToFile(uri: Uri, context: Context): File? {
+        val file = File(context.cacheDir, "captured_image.jpg")
+
+        return try {
+            val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+            val outputStream = FileOutputStream(file)
+            inputStream?.copyTo(outputStream)
+
+            inputStream?.close()
+            outputStream.close()
+            file
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    fun parseDetections(response: String?): Map<String, Int> {
+        if (response.isNullOrEmpty()) return emptyMap()
+
+        val detections = mutableMapOf<String, Int>()
+        val jsonObject = JSONObject(response)
+        val detectionObject = jsonObject.getJSONObject("detections")
+
+        detectionObject.keys().forEach { key ->
+            detections[key] = detectionObject.getInt(key)
+        }
+
+        return detections
     }
 }
