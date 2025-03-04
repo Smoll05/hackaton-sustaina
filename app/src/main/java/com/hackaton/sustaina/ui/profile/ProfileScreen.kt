@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -142,7 +143,7 @@ fun ProfilePage(navController: NavController,
             ) {
                 item {
                     Column(
-                        modifier = Modifier.width(80.dp),
+                        modifier = Modifier.widthIn(80.dp, 100.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
@@ -159,7 +160,7 @@ fun ProfilePage(navController: NavController,
                 }
                 item {
                     Column(
-                        modifier = Modifier.width(80.dp),
+                        modifier = Modifier.widthIn(80.dp, 100.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
@@ -176,7 +177,7 @@ fun ProfilePage(navController: NavController,
                 }
                 item {
                     Column(
-                        modifier = Modifier.width(80.dp),
+                        modifier = Modifier.widthIn(80.dp, 100.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
