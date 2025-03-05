@@ -133,7 +133,7 @@ fun LandingPageScreen(navController: NavController, viewModel: LandingPageViewMo
 
         Card(modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 16.dp)) {
+            .padding(top = 16.dp, bottom = 80.dp)) {
 
             Text(
                 text = "Upcoming Campaigns",
