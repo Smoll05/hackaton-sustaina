@@ -14,6 +14,7 @@ import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PinConfig
 import com.hackaton.sustaina.R
+import com.hackaton.sustaina.data.auth.AuthRepository
 import com.hackaton.sustaina.data.campaign.CampaignRepository
 import com.hackaton.sustaina.data.hotspot.HotspotRepository
 import com.hackaton.sustaina.domain.models.Campaign
@@ -29,6 +30,7 @@ import javax.inject.Inject
 class MapViewModel @Inject constructor(
     private val campaignRepo: CampaignRepository,
     private val hotspotRepo: HotspotRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<MapState> = MutableStateFlow(MapState())
     val uiState = _uiState.asStateFlow()
@@ -51,6 +53,10 @@ class MapViewModel @Inject constructor(
 
             _uiState.value = _uiState.value.copy(loading = false)
         }
+    }
+
+    fun getUserId(): String {
+        return authRepository.currentUserId
     }
 
     fun addCampaign(campaign: Campaign) {
