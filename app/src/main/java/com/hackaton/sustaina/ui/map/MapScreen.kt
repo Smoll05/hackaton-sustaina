@@ -219,7 +219,7 @@ fun MapScreen(navController: NavController, key: Long, viewModel: MapViewModel =
                         }
                     }
                 } else if (selectedCampaign != null) {
-                    CampaignDetailsBottomSheet(selectedCampaign!!, navController) {
+                    CampaignDetailsBottomSheet(selectedCampaign!!, navController, viewModel) {
                         bottomSheetScope.launch { sheetState.hide() }.invokeOnCompletion {
                             if (!sheetState.isVisible) {
                                 viewModel.hideBottomSheetMapEntryDetails()
@@ -612,6 +612,7 @@ fun HotspotDetailsBottomSheet(hotspot: Hotspot, onClose: () -> Unit) {
 fun CampaignDetailsBottomSheet(
     campaign: Campaign,
     navController: NavController,
+    viewModel: MapViewModel,
     onClose: () -> Unit
 ) {
 
@@ -693,7 +694,10 @@ fun CampaignDetailsBottomSheet(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
-                    onClick = { navController.navigate("AboutIssue/${campaign.campaignId}") },
+                    onClick = {
+                        navController.navigate("AboutIssue/${campaign.campaignId}")
+                        viewModel.hideBottomSheetMapEntryDetails()
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 16.dp)
