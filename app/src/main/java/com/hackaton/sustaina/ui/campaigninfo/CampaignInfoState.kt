@@ -1,5 +1,6 @@
 package com.hackaton.sustaina.ui.campaigninfo
 
+import com.google.android.gms.maps.model.LatLng
 import com.hackaton.sustaina.domain.models.Campaign
 
 data class CampaignInfoState(
@@ -15,4 +16,5 @@ data class CampaignInfoState(
     val campaignVenue: String = campaign.campaignVenue
     val campaignOrganizer: String = campaign.campaignOrganizer
     val campaignAbout: String = campaign.campaignAbout
+    val campaignLatLng: LatLng = LatLng(campaign.latitude, campaign.longitude)
 }

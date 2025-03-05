@@ -162,10 +162,10 @@ class MapViewModel @Inject constructor(
     private fun createCircle(hotspot: Hotspot): CircleOptions {
         val latLng = LatLng(hotspot.latitude, hotspot.longitude)
         val fillColor = when (hotspot.densityLevel) {
-            1 -> 0x5500FF00.toInt()     // Semi-transparent green -- low density
-            2 -> 0x55FFA500.toInt()     // Semi-transparent orange -- moderate density
-            3 -> 0x55FF0000.toInt()     // Semi-transparent red -- severe density
-            else -> 0x5500FF00.toInt()  // Default -- green
+            1 -> 0x1100FF00.toInt()     // Semi-transparent green -- low density
+            2 -> 0x11FFA500.toInt()     // Semi-transparent orange -- moderate density
+            3 -> 0x11FF0000.toInt()     // Semi-transparent red -- severe density
+            else -> 0x1100FF00.toInt()  // Default -- green
         }
         val strokeColor = when (hotspot.densityLevel) {
             1 -> 0xFF008000.toInt()     // Dark green -- low density
