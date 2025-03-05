@@ -3,10 +3,13 @@ package com.hackaton.sustaina.ui.map
 import com.hackaton.sustaina.ui.utils.notification.NotificationHelper
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +20,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
@@ -38,6 +43,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -75,7 +81,12 @@ import com.hackaton.sustaina.domain.models.HotspotDensity
 import com.hackaton.sustaina.domain.models.HotspotStatus
 import com.hackaton.sustaina.ui.loadingscreen.LoadingScreen
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.time.Instant
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 import kotlin.random.Random
 
 @OptIn(
@@ -331,7 +342,7 @@ fun CreateEntryBottomSheet(
 
         when (selectedTab) {
             0 -> CreateHotspotForm(navController, mapClickLocation, viewModel, context, onClose)
-            1 -> CreateCampaignForm(navController, mapClickLocation, viewModel, context, onClose)
+            1 -> CreateCampaignForm(navController, mapClickLocation, viewModel,  context, onClose)
         }
     }
 }
@@ -378,7 +389,7 @@ fun CreateHotspotForm(
             onOptionSelected = { selectedDensity = it },
             label = "Select Density"
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = {
@@ -393,14 +404,14 @@ fun CreateHotspotForm(
                     radius = 20.0,
                     timestamp = System.currentTimeMillis(),
                     imageUrl = "",
-                    reportedByUserId = "user@" + Random.nextInt(0, 1_000_000).toString()
+                    reportedByUserId = viewModel.getUserId()
                 )
                 viewModel.addHotspot(newHotspot)
                 Toast.makeText(context, "Hotspot added", Toast.LENGTH_SHORT).show()
                 Log.d("MapScreen", "New hotspot added: ${newHotspot.description}")
                 onClose()
             },
-            modifier = Modifier.align(Alignment.End)
+            modifier = Modifier.fillMaxWidth()
         ) {
             Text("Submit Hotspot")
         }
@@ -444,79 +455,146 @@ fun CreateCampaignForm(
 ) {
     var campaignName by remember { mutableStateOf("") }
     var campaignOrganizer by remember { mutableStateOf("") }
-    var campaignStartDate by remember { mutableStateOf(Instant.now().toEpochMilli()) }
+    var campaignStartDate by remember { mutableLongStateOf(Instant.now().toEpochMilli()) }
     var campaignAbout by remember { mutableStateOf("") }
     var campaignVenue by remember { mutableStateOf("") }
     var campaignAddress by remember { mutableStateOf("") }
+
+    val calendar = Calendar.getInstance()
+    val currentTimeZone = TimeZone.getDefault()
+
+    val datePickerDialog = DatePickerDialog(
+        context,
+        { _, year, month, dayOfMonth ->
+            val updatedCalendar = Calendar.getInstance().apply {
+                timeZone = currentTimeZone
+                timeInMillis = campaignStartDate
+                set(year, month, dayOfMonth)
+            }
+            campaignStartDate = updatedCalendar.timeInMillis
+        },
+        calendar.get(Calendar.YEAR),
+        calendar.get(Calendar.MONTH),
+        calendar.get(Calendar.DAY_OF_MONTH)
+    )
+
+    val timePickerDialog = TimePickerDialog(
+        context,
+        { _, hourOfDay, minute ->
+            val updatedCalendar = Calendar.getInstance().apply {
+                timeZone = currentTimeZone
+                timeInMillis = campaignStartDate
+                set(Calendar.HOUR_OF_DAY, hourOfDay)
+                set(Calendar.MINUTE, minute)
+            }
+            campaignStartDate = updatedCalendar.timeInMillis
+        },
+        calendar.get(Calendar.HOUR_OF_DAY),
+        calendar.get(Calendar.MINUTE),
+        false
+    )
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text(text = "Create a new Campaign", style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
-            value = campaignName,
-            onValueChange = { campaignName = it },
-            label = { Text("Campaign Name", color = MaterialTheme.colorScheme.onSurface) },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
+        val scrollState = rememberScrollState()
+        Column(modifier = Modifier.verticalScroll(scrollState)) {
+            OutlinedTextField(
+                value = campaignName,
+                onValueChange = { campaignName = it },
+                label = { Text("Campaign Name", color = MaterialTheme.colorScheme.onSurface) },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
-            value = campaignOrganizer,
-            onValueChange = { campaignOrganizer = it },
-            label = { Text("Organizer", color = MaterialTheme.colorScheme.onSurface) },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
+            OutlinedTextField(
+                value = campaignOrganizer,
+                onValueChange = { campaignOrganizer = it },
+                label = { Text("Organizer", color = MaterialTheme.colorScheme.onSurface) },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
-            value = campaignAbout,
-            onValueChange = { campaignAbout = it },
-            label = { Text("Campaign Description", color = MaterialTheme.colorScheme.onSurface) },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
+            OutlinedTextField(
+                value = campaignAbout,
+                onValueChange = { campaignAbout = it },
+                label = { Text("Campaign Description", color = MaterialTheme.colorScheme.onSurface) },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
-            value = campaignVenue,
-            onValueChange = { campaignVenue = it },
-            label = { Text("Venue", color = MaterialTheme.colorScheme.onSurface) },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
+            OutlinedTextField(
+                value = campaignVenue,
+                onValueChange = { campaignVenue = it },
+                label = { Text("Venue", color = MaterialTheme.colorScheme.onSurface) },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
-            value = campaignAddress,
-            onValueChange = { campaignAddress = it },
-            label = { Text("Address", color = MaterialTheme.colorScheme.onSurface) },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
+            OutlinedTextField(
+                value = campaignAddress,
+                onValueChange = { campaignAddress = it },
+                label = { Text("Address", color = MaterialTheme.colorScheme.onSurface) },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
 
-        Button(
-            onClick = {
-                val newCampaign = Campaign(
-                    campaignName = campaignName,
-                    campaignOrganizer = campaignOrganizer,
-                    campaignStartDate = campaignStartDate,
-                    campaignAbout = campaignAbout,
-                    campaignVenue = campaignVenue,
-                    campaignAddress = campaignAddress,
-                    campaignId = Random.nextInt(0, 1_000_000).toString(),
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                "Start Date & Time: ${
+                    SimpleDateFormat("yyyy-MM-dd HH:mm", 
+                        Locale.getDefault()).apply { 
+                        timeZone = TimeZone.getDefault()       
+                    }.format(Date(campaignStartDate))}")
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedButton(
+                    onClick = { datePickerDialog.show() },
+                    modifier = Modifier.weight(1f),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+                ) {
+                    Text("Pick Date", color = MaterialTheme.colorScheme.primary)
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedButton(
+                    onClick = { timePickerDialog.show() },
+                    modifier = Modifier.weight(1f),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
+                ) {
+                    Text("Pick Time", color = MaterialTheme.colorScheme.primary)
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
 
-                    latitude = mapClickLocation!!.latitude,
-                    longitude = mapClickLocation.longitude,
-                    campaignOrganizerId = "user@" + Random.nextInt(0, 1_000_000).toString(),
-                    campaignAttendingUser = List(0) { campaignOrganizer }
-                )
-                viewModel.addCampaign(newCampaign)
-                Toast.makeText(context, "Campaign added", Toast.LENGTH_SHORT).show()
-                Log.d("MapScreen", "New campaign added: ${newCampaign.campaignName}")
-                onClose()
-            },
-            modifier = Modifier.align(Alignment.End)
-        ) {
-            Text("Submit Campaign")
+            Button(
+                onClick = {
+                    val newCampaign = Campaign(
+                        campaignName = campaignName,
+                        campaignOrganizer = campaignOrganizer,
+                        campaignStartDate = campaignStartDate,
+                        campaignAbout = campaignAbout,
+                        campaignVenue = campaignVenue,
+                        campaignAddress = campaignAddress,
+                        campaignId = Random.nextInt(0, 1_000_000).toString(),
+                        latitude = mapClickLocation!!.latitude,
+                        longitude = mapClickLocation.longitude,
+                        campaignOrganizerId = "user@" + Random.nextInt(0, 1_000_000).toString(),
+                        campaignAttendingUser = List(0) { campaignOrganizer }
+                    )
+                    viewModel.addCampaign(newCampaign)
+                    Toast.makeText(context, "Campaign added", Toast.LENGTH_SHORT).show()
+                    Log.d("MapScreen", "New campaign added: ${newCampaign.campaignName}")
+                    onClose()
+                },
+                Modifier.fillMaxWidth()
+            ) {
+                Text("Submit Campaign")
+            }
         }
     }
 }
