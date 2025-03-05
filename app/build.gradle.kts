@@ -59,6 +59,7 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+        mlModelBinding = true
     }
 }
 
@@ -81,6 +82,10 @@ dependencies {
     implementation(libs.firebase.database)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.database.ktx)
+    implementation(libs.firebase.ml.modeldownloader.ktx)
+    implementation(libs.tensorflow.lite.support)
+    implementation(libs.tensorflow.lite.metadata)
+    implementation(libs.tensorflow.lite.gpu)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -127,9 +132,16 @@ dependencies {
     // Fused Location API; obtain current location of user
     implementation("com.google.android.gms:play-services-location:21.3.0")
 
+    // Firebase ML kit dependency
+    implementation ("com.google.firebase:firebase-ml-model-interpreter:22.0.3")
+
     // Background location when app is not active screen // NOT IMPLEMENTED
 //    implementation("androidx.work:work-runtime-ktx:2.10.0")
 
+    // API
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.squareup.okhttp3:okhttp:4.9.3")
 }
 
 kapt {
